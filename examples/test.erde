@@ -1,0 +1,22 @@
+#! this is a shebang
+
+---
+Numbers
+---
+
+43
+0x3fa
+0x9.aaeep+3
+.543
+30.43
+30e3
+30e+3
+30e-3
+
+---
+Strings
+---
+
+'single quote string'
+"double quote string"
+`long string: {999}`
