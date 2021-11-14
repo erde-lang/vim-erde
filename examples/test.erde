@@ -18,5 +18,30 @@ Strings
 ---
 
 'single quote string'
-"double quote string"
+"Breakdouble quote string"
 `long string: {999}`
+
+---
+Logic Flow
+---
+
+if 3 { }
+elseif 1 { }
+else { }
+
+do { }
+
+repeat { } until 3
+
+for i = 1, 2 { }
+for k, v in ipairs() { }
+
+break
+continue
+return
+
+do {
+  break
+  continue
+  return
+}
