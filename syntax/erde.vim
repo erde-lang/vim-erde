@@ -94,6 +94,16 @@ syntax keyword erdeReturn return skipwhite skipempty
 highlight default link erdeReturn Keyword
 
 " ------------------------------------------------------------------------------
+" Terminals
+" ------------------------------------------------------------------------------
+
+syntax keyword erdeNil nil
+syntax keyword erdeBool true false
+
+highlight default link erdeNil Type
+highlight default link erdeBool Boolean
+
+" ------------------------------------------------------------------------------
 " Clusters
 " ------------------------------------------------------------------------------
 

@@ -45,3 +45,11 @@ do {
   continue
   return
 }
+
+---
+Terminals
+---
+
+nil
+true
+false
