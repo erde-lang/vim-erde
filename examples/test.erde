@@ -5,6 +5,50 @@ this is a block comment
 ]]
 
 -- -----------------------------------------------------------------------------
+-- Operators
+-- -----------------------------------------------------------------------------
+
+-- Single char operators
+
+#a
+~a
+a | b
+a & b
+a + b
+a - b
+a < b
+a > b
+a = b
+a + b
+a - b
+a * b
+a / b
+a % b
+a ^ b
+
+-- Multi char operators
+
+a .. b
+...a
+a ?? b
+a == b
+a ~= b
+a <= b
+a >= b
+a .| b
+a .& b
+a .~ b
+a .<< b
+a .>> b
+a // b
+
+-- Anti examples (should NOT be highlighted correctly)
+
+a === b
+a || b
+a ? b
+
+-- -----------------------------------------------------------------------------
 -- Terminals
 -- -----------------------------------------------------------------------------
 
@@ -85,20 +129,12 @@ try {
 -- Functions
 -- -----------------------------------------------------------------------------
 
-local function test(a, b = 3, ...c) {
-
-}
-
-local function ta.ad.tes:test() {
-
-}
+local function test(a, b = 3, ...c) {}
+local function test.test:test() {}
+-- anti example
+local function test:test.test() {}
 
 test(1, 2, 3)
 
-local x = () -> {
-
-}
-
-local x = () => {
-
-}
+local x = () -> {}
+local x = (a, b) => {}

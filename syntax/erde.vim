@@ -22,10 +22,27 @@ syntax sync fromstart ":h :syn-sync-first
 syntax case match ":h :syn-case
 
 " ------------------------------------------------------------------------------
-" Util
+" Operators
+" This should be defined first, so we don't override other rules.
 " ------------------------------------------------------------------------------
 
-syntax match erdeName '[a-zA-Z][a-zA-Z0-9]*'
+" Do not allow arbitrary operator symbol combinations
+syntax match erdeOperator "[#~|&<>=+*/%^-]\@<![#~|&<>=+*/%^-]"
+
+syntax match erdeOperator "\.\.\.\="
+syntax match erdeOperator "??"
+syntax match erdeOperator "=="
+syntax match erdeOperator "\~="
+syntax match erdeOperator "<="
+syntax match erdeOperator ">="
+syntax match erdeOperator "\.|"
+syntax match erdeOperator "\.&"
+syntax match erdeOperator "\.\~"
+syntax match erdeOperator "\.<<"
+syntax match erdeOperator "\.>>"
+syntax match erdeOperator "//"
+
+highlight default link erdeOperator Operator
 
 " ------------------------------------------------------------------------------
 " Comments
@@ -131,14 +148,16 @@ highlight default link erdeReturn Keyword
 " -----------------------------------------------------------------------------
 
 syntax keyword erdeFunction function
+" Enforce function name syntax
 syntax match erdeFunctionId 
   \ '\%(\<function\>\s*\)\@<=\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
-syntax match erdeFunctionParams
-  \ '\%(\<function\>[^(]\+\)\@<=()'
+syntax match erdeSkinnyArrowFunction '\%(([^)]*)\)\@<=\s*->'
+syntax match erdeFatArrowFunction '\%(([^)]*)\)\@<=\s*=>'
 
 highlight default link erdeFunction Keyword
 highlight default link erdeFunctionId Function
-highlight default link erdeFunctionParams Special
+highlight default link erdeSkinnyArrowFunction Operator
+highlight default link erdeFatArrowFunction Operator
 
 " ------------------------------------------------------------------------------
 " Clusters
