@@ -22,6 +22,14 @@ syntax sync fromstart ":h :syn-sync-first
 syntax case match ":h :syn-case
 
 " ------------------------------------------------------------------------------
+" Misc
+" ------------------------------------------------------------------------------
+
+syntax region erdeBraces start='{' end='}' matchgroup=erdeBracesMatch
+  \ contains=erdeBreak,erdeContinue,erdeReturn,erdeNameKey,erdeExprKey
+highlight default link erdeBraces Noise
+
+" ------------------------------------------------------------------------------
 " Operators
 " This should be defined first, so we don't override other rules.
 " ------------------------------------------------------------------------------
@@ -41,6 +49,7 @@ syntax match erdeOperator "\.\~"
 syntax match erdeOperator "\.<<"
 syntax match erdeOperator "\.>>"
 syntax match erdeOperator "//"
+syntax match erdeOperator ">>"
 
 highlight default link erdeOperator Operator
 
@@ -87,7 +96,7 @@ highlight default link erdeFloat Float
 syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1' contains=erdeInterpolation
 syntax match  erdeLongString '\<\K\k*\>\%(\_s*`\)\@=' skipwhite skipempty nextgroup=erdeLongString
 syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]" contains=erdeInterpolation
-syntax region erdeInterpolation start='\%([^\\]\)\@<={' end='}' contained contains=@erdeExpr
+syntax region erdeInterpolation start='\%([^\\]\)\@<={' end='}' contained
 
 highlight default link erdeShortString String
 highlight default link erdeLongString String
@@ -109,19 +118,19 @@ highlight default link erdeModule Type
 " Logic Flow
 " ------------------------------------------------------------------------------
 
-syntax keyword erdeDo do skipwhite skipempty nextgroup=erdeBlock
-syntax keyword erdeIf if skipwhite skipempty nextgroup=erdeExpr
-syntax keyword erdeElseIf elseif skipwhite skipempty nextgroup=erdeExpr
-syntax keyword erdeElse else skipwhite skipempty nextgroup=erdeBlock
+syntax keyword erdeDo do
+syntax keyword erdeIf if
+syntax keyword erdeElseIf elseif
+syntax keyword erdeElse else
 syntax keyword erdeFor for
 syntax keyword erdeIn in
 syntax keyword erdeBreak break
 syntax keyword erdeContinue continue
-syntax region erdeRepeatUntil start='\<repeat\>' end='\<until\>' contains=erdeBlock nextgroup=erdeExpr
-syntax keyword erdeWhile while skipwhite skipempty nextgroup=erdeBlock
-syntax keyword erdeTry try skipwhite skipempty nextgroup=erdeBlock
+syntax region erdeRepeatUntil start='\<repeat\>' end='\<until\>' contains=erdeBraces
+syntax keyword erdeWhile while
+syntax keyword erdeTry try
 syntax keyword erdeCatch catch
-syntax keyword erdeReturn return skipwhite skipempty nextgroup=erdeExpr
+syntax keyword erdeReturn return
 
 highlight default link erdeDo Keyword
 highlight default link erdeIf Keyword
@@ -141,7 +150,11 @@ highlight default link erdeReturn Keyword
 " Tables
 " -----------------------------------------------------------------------------
 
+syntax match erdeNameKey '[a-zA-Z][a-zA-Z0-9]*\s*=\@=' contained
+syntax region erdeExprKey start='\[' end='\]' matchgroup=erdeExprKeyBrackets
 
+highlight default link erdeExprKeyBrackets Special
+highlight default link erdeNameKey Special
 
 " -----------------------------------------------------------------------------
 " Functions
@@ -153,21 +166,14 @@ syntax match erdeFunctionId
   \ '\%(\<function\>\s*\)\@<=\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
 syntax match erdeSkinnyArrowFunction '\%(([^)]*)\)\@<=\s*->'
 syntax match erdeFatArrowFunction '\%(([^)]*)\)\@<=\s*=>'
+syntax match erdeFunctionCall
+  \ '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
 
 highlight default link erdeFunction Keyword
 highlight default link erdeFunctionId Function
+highlight default link erdeFunctionCall Function
 highlight default link erdeSkinnyArrowFunction Operator
 highlight default link erdeFatArrowFunction Operator
-
-" ------------------------------------------------------------------------------
-" Clusters
-" ------------------------------------------------------------------------------
-
-syntax cluster erdeExpr contains=erdeNumber,erdeFloat,erdeShortString
-syntax cluster erdeStatement contains=erdeIf,erdeFor,erdeBreak,erdeContinue,erdeReturn
-syntax region erdeBlock start='{' end='}' matchgroup=erdeBraces contains=@erdeStatement
-
-highlight default link erdeBraces Noise
 
 " ------------------------------------------------------------------------------
 " Teardown
