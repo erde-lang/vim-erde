@@ -22,14 +22,6 @@ syntax sync fromstart ":h :syn-sync-first
 syntax case match ":h :syn-case
 
 " ------------------------------------------------------------------------------
-" Misc
-" ------------------------------------------------------------------------------
-
-syntax region erdeBraces start='{' end='}' matchgroup=erdeBracesMatch
-  \ contains=erdeBreak,erdeContinue,erdeReturn,erdeNameKey,erdeExprKey
-highlight default link erdeBraces Noise
-
-" ------------------------------------------------------------------------------
 " Operators
 " This should be defined first, so we don't override other rules.
 " ------------------------------------------------------------------------------
@@ -174,6 +166,16 @@ highlight default link erdeFunctionId Function
 highlight default link erdeFunctionCall Function
 highlight default link erdeSkinnyArrowFunction Operator
 highlight default link erdeFatArrowFunction Operator
+
+" ------------------------------------------------------------------------------
+" Misc
+" ------------------------------------------------------------------------------
+
+syntax cluster erdeExpr contains=erdeNumber,erdeFloat,erdeShortString
+
+syntax region erdeBraces start='{' end='}' matchgroup=erdeBracesMatch
+  \ contains=erdeOperator,@erdeExpr,erdeBreak,erdeContinue,erdeReturn,erdeNameKey,erdeExprKey
+highlight default link erdeBraces Noise
 
 " ------------------------------------------------------------------------------
 " Teardown
