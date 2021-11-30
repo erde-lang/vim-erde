@@ -2,7 +2,8 @@
 " Language: Erde
 " URL: https://github.com/erde-lang/vim-erde
 
-" Useful Helps
+" Helpful Helps
+" :h group-name
 " :h pattern-atoms
 
 " ------------------------------------------------------------------------------
@@ -43,8 +44,6 @@ syntax match erdeOperator "\.>>"
 syntax match erdeOperator "//"
 syntax match erdeOperator ">>"
 
-highlight default link erdeOperator Operator
-
 " ------------------------------------------------------------------------------
 " Comments
 " ------------------------------------------------------------------------------
@@ -54,45 +53,28 @@ syntax region erdeComment start='--' end='$' contains=erdeCommentTags
 syntax region erdeComment start='--\[\z(=*\)\['  end='\]\z1\]' contains=erdeCommentTags
 syntax region erdeShebang start='^#!' end='$'
 
-highlight default link erdeCommentTags Todo
-highlight default link erdeComment Comment
-highlight default link erdeShebang Comment
-
 " ------------------------------------------------------------------------------
-" Terminals
+" Types
+"
+" Boolean
+" Nil
+" Number
+" Float
 " ------------------------------------------------------------------------------
 
-syntax keyword erdeNil nil
 syntax keyword erdeBool true false
 
-highlight default link erdeNil Type
-highlight default link erdeBool Boolean
-
-" ------------------------------------------------------------------------------
-" Numbers
-" ------------------------------------------------------------------------------
+syntax keyword erdeNil nil
 
 syntax match erdeInt '\<\d\+\>'
 syntax match erdeHex '\<0[xX]\%([[:xdigit:]]*\.\)\=[[:xdigit:]]\+\%([pP][-+]\=\d\+\)\=\>'
 syntax match erdeFloat '\<\d*\.\=\d\+\%([eE][-+]\=\d\+\)\=\>'
 syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
 
-highlight default link erdeInt Number
-highlight default link erdeHex Number
-highlight default link erdeFloat Float
-
-" ------------------------------------------------------------------------------
-" Strings
-" ------------------------------------------------------------------------------
-
 syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1' contains=erdeInterpolation
 syntax match  erdeLongString '\<\K\k*\>\%(\_s*`\)\@=' skipwhite skipempty nextgroup=erdeLongString
 syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]" contains=erdeInterpolation
 syntax region erdeInterpolation start='\%([^\\]\)\@<={' end='}' contained
-
-highlight default link erdeShortString String
-highlight default link erdeLongString String
-highlight default link erdeInterpolation Noise
 
 " ------------------------------------------------------------------------------
 " Scopes
@@ -102,51 +84,25 @@ syntax keyword erdeLocal local
 syntax keyword erdeGlobal global
 syntax keyword erdeModule module
 
-highlight default link erdeLocal Type
-highlight default link erdeGlobal Type
-highlight default link erdeModule Type
-
 " ------------------------------------------------------------------------------
 " Logic Flow
 " ------------------------------------------------------------------------------
 
-syntax keyword erdeDo do
-syntax keyword erdeIf if
-syntax keyword erdeElseIf elseif
-syntax keyword erdeElse else
+syntax keyword erdeIf if nextgroup=erdeIfElseCondition
+syntax keyword erdeElseIf elseif nextgroup=erdeIfElseCondition
+syntax keyword erdeElse else nextgroup=erdeIfElseCondition
+syntax match erdeIfElseCondition '[^{]*' contained transparent nextgroup=erdeBlock
+
+syntax keyword erdeDo do skipwhite skipempty nextgroup=erdeBlock
 syntax keyword erdeFor for
 syntax keyword erdeIn in
 syntax keyword erdeBreak break
 syntax keyword erdeContinue continue
 syntax region erdeRepeatUntil start='\<repeat\>' end='\<until\>' contains=erdeBraces
 syntax keyword erdeWhile while
-syntax keyword erdeTry try
+syntax keyword erdeTry try skipwhite skipempty nextgroup=erdeBlock
 syntax keyword erdeCatch catch
 syntax keyword erdeReturn return
-
-highlight default link erdeDo Keyword
-highlight default link erdeIf Keyword
-highlight default link erdeElseIf Keyword
-highlight default link erdeElse Keyword
-highlight default link erdeFor Keyword
-highlight default link erdeIn Keyword
-highlight default link erdeBreak Keyword
-highlight default link erdeContinue Keyword
-highlight default link erdeRepeatUntil Keyword
-highlight default link erdeWhile Keyword
-highlight default link erdeTry Keyword
-highlight default link erdeCatch Keyword
-highlight default link erdeReturn Keyword
-
-" -----------------------------------------------------------------------------
-" Tables
-" -----------------------------------------------------------------------------
-
-syntax match erdeNameKey '[a-zA-Z][a-zA-Z0-9]*\s*=\@=' contained
-syntax region erdeExprKey start='\[' end='\]' matchgroup=erdeExprKeyBrackets
-
-highlight default link erdeExprKeyBrackets Special
-highlight default link erdeNameKey Special
 
 " -----------------------------------------------------------------------------
 " Functions
@@ -156,26 +112,111 @@ syntax keyword erdeFunction function
 " Enforce function name syntax
 syntax match erdeFunctionId 
   \ '\%(\<function\>\s*\)\@<=\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
-syntax match erdeSkinnyArrowFunction '\%(([^)]*)\)\@<=\s*->'
-syntax match erdeFatArrowFunction '\%(([^)]*)\)\@<=\s*=>'
+syntax match erdeSkinnyArrowFunction '\%(([^)]*)\)\@<=\s*->' skipwhite skipempty nextgroup=@erdeExpr,erdeBlock
+syntax match erdeFatArrowFunction '\%(([^)]*)\)\@<=\s*=>' skipwhite skipempty nextgroup=@erdeExpr,erdeBlock
 syntax match erdeFunctionCall
   \ '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
 
-highlight default link erdeFunction Keyword
-highlight default link erdeFunctionId Function
-highlight default link erdeFunctionCall Function
-highlight default link erdeSkinnyArrowFunction Operator
-highlight default link erdeFatArrowFunction Operator
-
 " ------------------------------------------------------------------------------
-" Misc
+" Blocks
 " ------------------------------------------------------------------------------
 
-syntax cluster erdeExpr contains=erdeNumber,erdeFloat,erdeShortString
+syntax cluster erdeExpr 
+  \ contains=erdeOperator,erdeNumber,erdeFloat,erdeShortString,erdeLongString,erdeSkinnyArrowFunction,erdeFatArrowFunction
 
-syntax region erdeBraces start='{' end='}' matchgroup=erdeBracesMatch
-  \ contains=erdeOperator,@erdeExpr,erdeBreak,erdeContinue,erdeReturn,erdeNameKey,erdeExprKey
-highlight default link erdeBraces Noise
+syntax cluster erdeStatement
+  \ contains=erdeIf,erdeIfElse,erdeElse,erdeReturn
+syntax region erdeBlock matchgroup=erdeBlockBraces start='{' end='}' contains=@erdeStatement,@erdeExpr keepend
+
+syntax cluster erdeLoopStatement
+  \ contains=@erdeStatement,erdeBreak,erdeContinue
+syntax region erdeLoopBlock start='{' end='}' keepend
+  \ contains=@erdeLoopStatement,@erdeExpr
+
+" -----------------------------------------------------------------------------
+" Tables
+" -----------------------------------------------------------------------------
+
+syntax match erdeInlineKey ':[a-zA-Z][a-zA-Z0-9]*' contained
+syntax match erdeNameKey '[a-zA-Z][a-zA-Z0-9]*\s*=\@=' contained
+syntax region erdeExprKey matchgroup=erdeExprKeyBrackets start='\[' end='\]' contains=@erdeExpr
+
+syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}' contains=erdeInlineKey,erdeNameKey,erdeExprKey,@erdeExpr keepend
+
+" ------------------------------------------------------------------------------
+" Highlighting
+"
+" Define the default highlighting.
+" For version 5.7 and earlier: only when not done already
+" For version 5.8 and later: only when an item doesn't have highlighting yet
+" ------------------------------------------------------------------------------
+
+if version >= 508 || !exists('did_erde_syn_inits')
+  if version < 508
+    let did_erde_syn_inits = 1
+    command -nargs=+ HiLink hi link <args>
+  else
+    command -nargs=+ HiLink hi def link <args>
+  endif
+
+  " Operators
+  HiLink erdeOperator Operator
+
+  " Comments
+  HiLink erdeComment Comment
+  HiLink erdeCommentTags Todo
+  HiLink erdeShebang Comment
+
+  " Types
+  HiLink erdeBool Boolean
+  HiLink erdeNil Type
+  HiLink erdeInt Number
+  HiLink erdeHex Number
+  HiLink erdeFloat Float
+  HiLink erdeShortString String
+  HiLink erdeLongString String
+  HiLink erdeInterpolation Noise
+
+  " Scopes
+  HiLink erdeLocal Type
+  HiLink erdeModule Type
+  HiLink erdeGlobal Type
+
+  " Logic Flow
+  HiLink erdeIf Keyword
+  HiLink erdeElseIf Keyword
+  HiLink erdeElse Keyword
+
+  HiLink erdeFor Keyword
+  HiLink erdeIn Keyword
+  HiLink erdeBreak Keyword
+  HiLink erdeContinue Keyword
+
+  HiLink erdeDo Keyword
+  HiLink erdeTry Keyword
+  HiLink erdeCatch Keyword
+  HiLink erdeRepeatUntil Keyword
+  HiLink erdeReturn Keyword
+  HiLink erdeWhile Keyword
+
+  " Functions
+  HiLink erdeFunction Keyword
+  HiLink erdeFunctionId Function
+  HiLink erdeFunctionCall Function
+  HiLink erdeSkinnyArrowFunction Operator
+  HiLink erdeFatArrowFunction Operator
+
+  " Blocks
+  HiLink erdeBlockBraces Noise
+
+  " Tables
+  HiLink erdeInlineKey Special
+  HiLink erdeNameKey Special
+  HiLink erdeExprKeyBrackets Special
+  HiLink erdeTableBraces Structure
+
+  delcommand HiLink
+end
 
 " ------------------------------------------------------------------------------
 " Teardown

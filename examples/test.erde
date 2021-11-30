@@ -62,6 +62,8 @@ false
 -- Numbers
 -- -----------------------------------------------------------------------------
 
+-- Examples
+
 43
 0x3fa
 0x9.aaeep+3
@@ -70,6 +72,12 @@ false
 30e3
 30e+3
 30e-3
+
+-- Anti-Examples
+
+x93
+43e
+43e-
 
 -- -----------------------------------------------------------------------------
 -- Strings
@@ -97,7 +105,7 @@ module c = 4
 
 do { }
 
-if {1, 2} { }
+if test({1, 2}) { }
 elseif 1 { }
 else { }
 
@@ -128,7 +136,9 @@ try {
 -- -----------------------------------------------------------------------------
 
 local x = {
+  :mykey,
   mykey = 3,
+  mykey = () -> {},
   ['somekey'] = () -> {},
 }
 
@@ -147,6 +157,7 @@ local function test.test:test() {}
 -- anti example
 local function test:test.test() {}
 
+local x = () -> "hello"
 local x = () -> {}
 local x = (a, b) => {}
 
