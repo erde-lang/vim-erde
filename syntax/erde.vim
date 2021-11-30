@@ -96,8 +96,8 @@ syntax match erdeIfElseCondition '[^{]*' contained transparent nextgroup=erdeBlo
 syntax keyword erdeDo do skipwhite skipempty nextgroup=erdeBlock
 syntax keyword erdeFor for
 syntax keyword erdeIn in
-syntax keyword erdeBreak break
-syntax keyword erdeContinue continue
+syntax keyword erdeBreak break contained
+syntax keyword erdeContinue continue contained
 syntax region erdeRepeatUntil start='\<repeat\>' end='\<until\>' contains=erdeBraces
 syntax keyword erdeWhile while
 syntax keyword erdeTry try skipwhite skipempty nextgroup=erdeBlock
@@ -112,26 +112,10 @@ syntax keyword erdeFunction function
 " Enforce function name syntax
 syntax match erdeFunctionId 
   \ '\%(\<function\>\s*\)\@<=\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
-syntax match erdeSkinnyArrowFunction '\%(([^)]*)\)\@<=\s*->' skipwhite skipempty nextgroup=@erdeExpr,erdeBlock
-syntax match erdeFatArrowFunction '\%(([^)]*)\)\@<=\s*=>' skipwhite skipempty nextgroup=@erdeExpr,erdeBlock
+syntax match erdeSkinnyArrowFunction '\%(([^)]*)\)\@<=\s*->' skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeFatArrowFunction '\%(([^)]*)\)\@<=\s*=>' skipwhite skipempty nextgroup=erdeBlock
 syntax match erdeFunctionCall
   \ '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
-
-" ------------------------------------------------------------------------------
-" Blocks
-" ------------------------------------------------------------------------------
-
-syntax cluster erdeExpr 
-  \ contains=erdeOperator,erdeNumber,erdeFloat,erdeShortString,erdeLongString,erdeSkinnyArrowFunction,erdeFatArrowFunction
-
-syntax cluster erdeStatement
-  \ contains=erdeIf,erdeIfElse,erdeElse,erdeReturn
-syntax region erdeBlock matchgroup=erdeBlockBraces start='{' end='}' contains=@erdeStatement,@erdeExpr keepend
-
-syntax cluster erdeLoopStatement
-  \ contains=@erdeStatement,erdeBreak,erdeContinue
-syntax region erdeLoopBlock start='{' end='}' keepend
-  \ contains=@erdeLoopStatement,@erdeExpr
 
 " -----------------------------------------------------------------------------
 " Tables
@@ -139,9 +123,25 @@ syntax region erdeLoopBlock start='{' end='}' keepend
 
 syntax match erdeInlineKey ':[a-zA-Z][a-zA-Z0-9]*' contained
 syntax match erdeNameKey '[a-zA-Z][a-zA-Z0-9]*\s*=\@=' contained
-syntax region erdeExprKey matchgroup=erdeExprKeyBrackets start='\[' end='\]' contains=@erdeExpr
+syntax region erdeExprKey matchgroup=erdeExprKeyBrackets start='\[' end='\]' contains=@erdeExpr contained
 
-syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}' contains=erdeInlineKey,erdeNameKey,erdeExprKey,@erdeExpr keepend
+syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}' contains=erdeInlineKey,erdeNameKey,erdeExprKey,@erdeExpr
+
+" ------------------------------------------------------------------------------
+" Blocks
+" ------------------------------------------------------------------------------
+
+syntax cluster erdeExpr 
+  \ contains=erdeOperator,erdeNumber,erdeFloat,erdeShortString,erdeLongString,erdeSkinnyArrowFunction,erdeFatArrowFunction,erdeTable
+
+syntax cluster erdeStatement
+  \ contains=erdeIf,erdeElseIf,erdeElse,erdeReturn
+syntax region erdeBlock matchgroup=erdeBlockBraces start='{' end='}' contains=@erdeStatement,@erdeExpr contained
+
+syntax cluster erdeLoopStatement
+  \ contains=@erdeStatement,erdeBreak,erdeContinue
+syntax region erdeLoopBlock start='{' end='}' contained
+  \ contains=@erdeLoopStatement,@erdeExpr
 
 " ------------------------------------------------------------------------------
 " Highlighting
@@ -207,7 +207,8 @@ if version >= 508 || !exists('did_erde_syn_inits')
   HiLink erdeFatArrowFunction Operator
 
   " Blocks
-  HiLink erdeBlockBraces Noise
+  " TODO: change me to Noise
+  HiLink erdeBlockBraces Special
 
   " Tables
   HiLink erdeInlineKey Special

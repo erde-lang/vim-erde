@@ -44,7 +44,7 @@ a // b
 
 (1, 2, 3) >> test
 
--- Anti examples (should NOT be highlighted correctly)
+-- Anti-Examples
 
 a === b
 a || b
@@ -115,21 +115,20 @@ while x {}
 for i = 1, 2 { }
 for k, v in ipairs() { }
 
-break
-continue
 return
 
-do {
+while true {
   break
   continue
-  return
 }
 
-try {
+try {}
+catch() {}
 
-} catch() {
+-- Anti-Examples
 
-}
+break
+continue
 
 -- -----------------------------------------------------------------------------
 -- Tables
@@ -137,9 +136,10 @@ try {
 
 local x = {
   :mykey,
+  mykey = { x = 2 },
+  ['mykey'] = () => { return },
+  mykey = () -> ({ 1, 2 }),
   mykey = 3,
-  mykey = () -> {},
-  ['somekey'] = () -> {},
 }
 
 -- -----------------------------------------------------------------------------
@@ -158,8 +158,8 @@ local function test.test:test() {}
 local function test:test.test() {}
 
 local x = () -> "hello"
-local x = () -> {}
-local x = (a, b) => {}
+local x = () -> { return }
+local x = (a, b) => (1, 2, "hi")
 
 test(1, 2, 3)
 test.test(1, 2, 3)
