@@ -83,13 +83,13 @@ x93
 -- Strings
 -- -----------------------------------------------------------------------------
 
-'single {quote} string'
-"Breakdouble {quote} string"
+'single {99} string'
+"Breakdouble {99} string"
 
-[[ long {string} ]]
-[=[ long {string} ]=]
+[[ long {99} ]]
+[=[ long {99} ]=]
 
-'single \{quote} string'
+'single \{99} string'
 
 -- -----------------------------------------------------------------------------
 -- Scopes
@@ -154,8 +154,6 @@ local x = a?.b?[1].c?()
 
 local function test(a, b = 3, ...c) {}
 local function test.test:test() {}
--- anti example
-local function test:test.test() {}
 
 local x = () -> "hello"
 local x = () -> { return }
@@ -170,3 +168,7 @@ return (
   2,
   3,
 )
+
+-- Anti-Examples
+
+local function test:test.test() {}

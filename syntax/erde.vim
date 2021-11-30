@@ -74,7 +74,7 @@ syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
 syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1' contains=erdeInterpolation
 syntax match  erdeLongString '\<\K\k*\>\%(\_s*`\)\@=' skipwhite skipempty nextgroup=erdeLongString
 syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]" contains=erdeInterpolation
-syntax region erdeInterpolation start='\%([^\\]\)\@<={' end='}' contained
+syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}' transparent contained contains=@erdeExpr
 
 " ------------------------------------------------------------------------------
 " Scopes
@@ -176,6 +176,7 @@ if version >= 508 || !exists('did_erde_syn_inits')
   HiLink erdeShortString String
   HiLink erdeLongString String
   HiLink erdeInterpolation Noise
+  HiLink erdeInterpolationBraces Special
 
   " Scopes
   HiLink erdeLocal Type
