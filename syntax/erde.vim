@@ -140,7 +140,7 @@ syntax region erdeFunctionParams start='(' end=')' contained
 
 syntax match erdeSkinnyArrowFunction '->' skipwhite skipempty nextgroup=erdeBlock
 syntax match erdeFatArrowFunction '=>' skipwhite skipempty nextgroup=erdeBlock
-syntax region erdeArrowFunctionParams start='(' end=')'
+syntax match erdeArrowFunctionParams '(.*)\s*\%(->\|=>\)\@=' transparent
   \ contains=erdeParam,@erdeExpr
   \ skipwhite skipempty nextgroup=erdeSkinnyArrowFunction,erdeFatArrowFunction
 
