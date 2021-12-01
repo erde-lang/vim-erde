@@ -119,14 +119,24 @@ syntax keyword erdeReturn return
 " Functions
 " -----------------------------------------------------------------------------
 
-syntax keyword erdeFunction function
-" Enforce function name syntax
-syntax match erdeFunctionId 
-  \ '\%(\<function\>\s*\)\@<=\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
-syntax match erdeSkinnyArrowFunction '\%(([^)]*)\)\@<=\s*->' skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeFatArrowFunction '\%(([^)]*)\)\@<=\s*=>' skipwhite skipempty nextgroup=erdeBlock
 syntax match erdeFunctionCall
   \ '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
+
+syntax match erdeParam '[a-zA-Z][a-zA-Z0-9]*' contained
+
+syntax keyword erdeFunction function
+syntax match erdeFunctionId 
+  \ '\%(\<function\>\s*\)\@<=\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
+  \ skipwhite skipempty nextgroup=erdeFunctionParams
+syntax region erdeFunctionParams start='(' end=')' contained
+  \ contains=erdeParam,@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock
+
+syntax match erdeSkinnyArrowFunction '->' skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeFatArrowFunction '=>' skipwhite skipempty nextgroup=erdeBlock
+syntax region erdeArrowFunctionParams start='(' end=')'
+  \ contains=erdeParam,@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeSkinnyArrowFunction,erdeFatArrowFunction
 
 " -----------------------------------------------------------------------------
 " Tables
@@ -215,9 +225,10 @@ if version >= 508 || !exists('did_erde_syn_inits')
   HiLink erdeWhile Keyword
 
   " Functions
+  HiLink erdeFunctionCall Function
+  HiLink erdeParam Identifier
   HiLink erdeFunction Keyword
   HiLink erdeFunctionId Function
-  HiLink erdeFunctionCall Function
   HiLink erdeSkinnyArrowFunction Operator
   HiLink erdeFatArrowFunction Operator
 
