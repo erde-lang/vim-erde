@@ -55,8 +55,11 @@ syntax match erdeOperator '//'
 syntax match erdeOperator '>>'
 
 
-syntax region erdeTernaryRegion matchgroup=erdeTernary start='?' end=':' contains=@erdeExpr
+syntax region erdeTernary matchgroup=erdeOperator start='?' end=':' contains=@erdeExpr
 syntax match erdeOperator '??'
+syntax match erdeOperator '?.'
+syntax region erdeOptBrackets matchgroup=erdeOperator start='?\[' end=']' contains=@erdeExpr
+syntax region erdeOptParens matchgroup=erdeOperator start='?(' end=')' contains=@erdeExpr
 
 " ------------------------------------------------------------------------------
 " Comments
@@ -187,7 +190,6 @@ if version >= 508 || !exists('did_erde_syn_inits')
 
   " Operators
   HiLink erdeOperator Operator
-  HiLink erdeTernary Operator
 
   " Comments
   HiLink erdeComment Comment
