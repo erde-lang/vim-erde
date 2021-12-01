@@ -23,6 +23,17 @@ syntax sync fromstart ":h :syn-sync-first
 syntax case match ":h :syn-case
 
 " ------------------------------------------------------------------------------
+" Wrappers
+" ------------------------------------------------------------------------------
+
+syntax region erdeParens start='(' end=')' transparent contains=@erdeExpr
+syntax region erdeBrackets start='\[' end='\]' transparent contains=@erdeExpr
+
+syntax match erdeError ')'
+syntax match erdeError '}'
+syntax match erdeError '\]'
+
+" ------------------------------------------------------------------------------
 " Operators
 " This should be defined first, so we don't override other rules.
 " ------------------------------------------------------------------------------
@@ -158,6 +169,8 @@ if version >= 508 || !exists('did_erde_syn_inits')
   else
     command -nargs=+ HiLink hi def link <args>
   endif
+
+  HiLink erdeError Error
 
   " Operators
   HiLink erdeOperator Operator
