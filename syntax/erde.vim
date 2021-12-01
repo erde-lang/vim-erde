@@ -71,9 +71,9 @@ syntax match erdeHex '\<0[xX]\%([[:xdigit:]]*\.\)\=[[:xdigit:]]\+\%([pP][-+]\=\d
 syntax match erdeFloat '\<\d*\.\=\d\+\%([eE][-+]\=\d\+\)\=\>'
 syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
 
-syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1' contains=erdeInterpolation
-syntax match  erdeLongString '\<\K\k*\>\%(\_s*`\)\@=' skipwhite skipempty nextgroup=erdeLongString
-syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]" contains=erdeInterpolation
+syntax match erdeEscapeChar /\\[\\abfnrtvz'"{}]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}/ contained
+syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1' contains=erdeEscapeChar,erdeInterpolation
+syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]" contains=erdeEscapeChar,erdeInterpolation
 syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}' transparent contained contains=@erdeExpr
 
 " ------------------------------------------------------------------------------
@@ -173,6 +173,7 @@ if version >= 508 || !exists('did_erde_syn_inits')
   HiLink erdeInt Number
   HiLink erdeHex Number
   HiLink erdeFloat Float
+  HiLink erdeEscapeChar SpecialChar
   HiLink erdeShortString String
   HiLink erdeLongString String
   HiLink erdeInterpolation Noise
