@@ -39,21 +39,24 @@ syntax match erdeError '\]'
 " ------------------------------------------------------------------------------
 
 " Do not allow arbitrary operator symbol combinations
-syntax match erdeOperator "[#~|&<>=+*/%^-]\@<![#~|&<>=+*/%^-]"
+syntax match erdeOperator '[#~|&<>=+*/%^-]\@<![#~|&<>=+*/%^-]'
 
-syntax match erdeOperator "\.\.\.\="
-syntax match erdeOperator "??"
-syntax match erdeOperator "=="
-syntax match erdeOperator "\~="
-syntax match erdeOperator "<="
-syntax match erdeOperator ">="
-syntax match erdeOperator "\.|"
-syntax match erdeOperator "\.&"
-syntax match erdeOperator "\.\~"
-syntax match erdeOperator "\.<<"
-syntax match erdeOperator "\.>>"
-syntax match erdeOperator "//"
-syntax match erdeOperator ">>"
+syntax match erdeOperator '\.\.\.\='
+syntax match erdeOperator '=='
+syntax match erdeOperator '\~='
+syntax match erdeOperator '<='
+syntax match erdeOperator '>='
+syntax match erdeOperator '\.|'
+syntax match erdeOperator '\.&'
+syntax match erdeOperator '\.\~'
+syntax match erdeOperator '\.<<'
+syntax match erdeOperator '\.>>'
+syntax match erdeOperator '//'
+syntax match erdeOperator '>>'
+
+
+syntax region erdeTernaryRegion matchgroup=erdeTernary start='?' end=':' contains=@erdeExpr
+syntax match erdeOperator '??'
 
 " ------------------------------------------------------------------------------
 " Comments
@@ -184,6 +187,7 @@ if version >= 508 || !exists('did_erde_syn_inits')
 
   " Operators
   HiLink erdeOperator Operator
+  HiLink erdeTernary Operator
 
   " Comments
   HiLink erdeComment Comment
