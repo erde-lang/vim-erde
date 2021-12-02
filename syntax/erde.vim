@@ -101,6 +101,9 @@ syntax keyword erdeLocal local
 syntax keyword erdeGlobal global
 syntax keyword erdeModule module
 
+syntax match erdeName '[a-zA-Z][a-zA-Z0-9]*' contained
+syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='=\@=' transparent contains=erdeName,erdeDestructure
+
 " ------------------------------------------------------------------------------
 " Logic Flow
 " ------------------------------------------------------------------------------
@@ -128,31 +131,31 @@ syntax keyword erdeReturn return
 syntax match erdeFunctionCall
   \ '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
 
-syntax match erdeParam '[a-zA-Z][a-zA-Z0-9]*' contained
-
-syntax keyword erdeFunction function
-syntax match erdeFunctionId 
-  \ '\%(\<function\>\s*\)\@<=\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
+syntax keyword erdeFunction function skipwhite skipempty nextgroup=erdeFunctionId
+syntax match erdeFunctionId contained
+  \ '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
   \ skipwhite skipempty nextgroup=erdeFunctionParams
 syntax region erdeFunctionParams start='(' end=')' contained
-  \ contains=erdeParam,@erdeExpr
+  \ contains=erdeName,erdeDestructure,@erdeExpr
   \ skipwhite skipempty nextgroup=erdeBlock
 
 syntax match erdeSkinnyArrowFunction '->' skipwhite skipempty nextgroup=erdeBlock
 syntax match erdeFatArrowFunction '=>' skipwhite skipempty nextgroup=erdeBlock
 syntax match erdeArrowFunctionParams '(.*)\s*\%(->\|=>\)\@=' transparent
-  \ contains=erdeParam,@erdeExpr
+  \ contains=erdeName,erdeDestructure,@erdeExpr
   \ skipwhite skipempty nextgroup=erdeSkinnyArrowFunction,erdeFatArrowFunction
 
 " -----------------------------------------------------------------------------
-" Tables
+" Tables / Destructuring
 " -----------------------------------------------------------------------------
 
 syntax match erdeInlineKey ':[a-zA-Z][a-zA-Z0-9]*' contained
 syntax match erdeNameKey '[a-zA-Z][a-zA-Z0-9]*\s*=\@=' contained
 syntax region erdeExprKey matchgroup=erdeExprKeyBrackets start='\[' end='\]' contains=@erdeExpr contained
-
 syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}' contains=erdeInlineKey,erdeNameKey,erdeExprKey,@erdeExpr
+
+syntax region erdeArrayDestruct matchgroup=erdeDestructBrackets start='\[' end='\]' contains=erdeName contained
+syntax region erdeDestructure matchgroup=erdeTableBraces start='{' end='}' contains=erdeName,erdeArrayDestruct,@erdeExpr contained
 
 " ------------------------------------------------------------------------------
 " Blocks
@@ -212,6 +215,7 @@ if version >= 508 || !exists('did_erde_syn_inits')
   HiLink erdeLocal Type
   HiLink erdeModule Type
   HiLink erdeGlobal Type
+  HiLink erdeName Identifier
 
   " Logic Flow
   HiLink erdeIf Keyword
@@ -232,7 +236,6 @@ if version >= 508 || !exists('did_erde_syn_inits')
 
   " Functions
   HiLink erdeFunctionCall Function
-  HiLink erdeParam Identifier
   HiLink erdeFunction Keyword
   HiLink erdeFunctionId Function
   HiLink erdeSkinnyArrowFunction Operator
@@ -242,11 +245,12 @@ if version >= 508 || !exists('did_erde_syn_inits')
   " TODO: change me to Noise
   HiLink erdeBlockBraces Special
 
-  " Tables
+  " Tables / Destructuring
   HiLink erdeInlineKey Special
   HiLink erdeNameKey Special
   HiLink erdeExprKeyBrackets Special
   HiLink erdeTableBraces Structure
+  HiLink erdeDestructBrackets Structure
 
   delcommand HiLink
 end
