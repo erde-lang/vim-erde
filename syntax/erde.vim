@@ -57,7 +57,8 @@ syntax match erdeOperator '>>'
 
 syntax region erdeTernary matchgroup=erdeOperator start='?' end=':' contains=@erdeExpr
 syntax match erdeOperator '??'
-syntax match erdeOperator '?.'
+syntax match erdeOperator '?\.'
+syntax match erdeOperator '?:'
 syntax region erdeOptBrackets matchgroup=erdeOperator start='?\[' end=']' contains=@erdeExpr
 syntax region erdeOptParens matchgroup=erdeOperator start='?(' end=')' contains=@erdeExpr
 
@@ -128,8 +129,7 @@ syntax keyword erdeReturn return
 " Functions
 " -----------------------------------------------------------------------------
 
-syntax match erdeFunctionCall
-  \ '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
+syntax match erdeFunctionCall '[a-zA-Z][a-zA-Z0-9]*\s*(\@='
 
 syntax keyword erdeFunction function skipwhite skipempty nextgroup=erdeFunctionId
 syntax match erdeFunctionId contained

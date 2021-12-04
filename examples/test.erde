@@ -164,9 +164,11 @@ local x = () -> "hello"
 local x = () -> { return }
 local x = (a, b) => (1, 2, "hi")
 
+test.test()
 test(1, 2, 3, a, b, c)
 test.test(1, 2, 3, a, b, c)
 test.test:test(1, 2, 3, a, b, c)
+test?.test[1]:test(1, 2, 3, a, b, c)
 
 return (
   1,
