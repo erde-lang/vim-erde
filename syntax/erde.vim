@@ -32,9 +32,6 @@ syntax case match ":h :syn-case
 syntax cluster erdeExpr 
   \ contains=erdeOperator,erdeNumber,erdeFloat,erdeShortString,erdeLongString,erdeSkinnyArrowFunction,erdeFatArrowFunction,erdeTable
 
-syntax cluster erdeStatement
-  \ contains=erdeBreak,erdeContinue,erdeIf,erdeElseIf,erdeElse,erdeReturn
-
 " Keywords
 
 syntax keyword erdeKeyword if elseif else do for in break continue repeat until while try catch return
@@ -54,7 +51,7 @@ syntax region erdeBrackets matchgroup=erdeOperator start='\[' end=']' transparen
 syntax region erdeOptParens matchgroup=erdeOperator start='?(' end=')' transparent
 
 syntax region erdeTable matchgroup=erdeBraces start='{' end='}' contained contains=@erdeExpr
-syntax region erdeBlock matchgroup=erdeBraces start='{' end='}' contains=@erdeStatement,@erdeExpr
+syntax region erdeBlock matchgroup=erdeBraces start='{' end='}' contains=erdeKeyword,@erdeExpr
 
 syntax match erdeError ')'
 syntax match erdeError '}'
