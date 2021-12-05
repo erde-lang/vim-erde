@@ -23,237 +23,123 @@ syntax sync fromstart ":h :syn-sync-first
 syntax case match ":h :syn-case
 
 " ------------------------------------------------------------------------------
-" Wrappers
-" ------------------------------------------------------------------------------
-
-syntax region erdeParens start='(' end=')' transparent contains=@erdeExpr
-syntax region erdeBrackets start='\[' end='\]' transparent contains=@erdeExpr
-
-syntax match erdeError ')'
-syntax match erdeError '}'
-syntax match erdeError '\]'
-
-" ------------------------------------------------------------------------------
-" Operators
-" This should be defined first, so we don't override other rules.
-" ------------------------------------------------------------------------------
-
-" Do not allow arbitrary operator symbol combinations
-syntax match erdeOperator '[#~|&<>=+*/%^-]\@<![#~|&<>=+*/%^-]'
-
-syntax match erdeOperator '\.\.\.\='
-syntax match erdeOperator '=='
-syntax match erdeOperator '\~='
-syntax match erdeOperator '<='
-syntax match erdeOperator '>='
-syntax match erdeOperator '\.|'
-syntax match erdeOperator '\.&'
-syntax match erdeOperator '\.\~'
-syntax match erdeOperator '\.<<'
-syntax match erdeOperator '\.>>'
-syntax match erdeOperator '//'
-syntax match erdeOperator '>>'
-
-
-syntax region erdeTernary matchgroup=erdeOperator start='?' end=':' contains=@erdeExpr
-syntax match erdeOperator '??'
-syntax match erdeOperator '?\.'
-syntax match erdeOperator '?:'
-syntax region erdeOptBrackets matchgroup=erdeOperator start='?\[' end=']' contains=@erdeExpr
-syntax region erdeOptParens matchgroup=erdeOperator start='?(' end=')' contains=@erdeExpr
-
-" ------------------------------------------------------------------------------
-" Comments
-" ------------------------------------------------------------------------------
-
-syntax keyword erdeCommentTags contained NOTE TODO FIXME XXX TBD
-syntax region erdeComment start='--' end='$' contains=erdeCommentTags
-syntax region erdeComment start='--\[\z(=*\)\['  end='\]\z1\]' contains=erdeCommentTags
-syntax region erdeShebang start='^#!' end='$'
-
-" ------------------------------------------------------------------------------
-" Types
+" Syntax
 "
-" Boolean
-" Nil
-" Number
-" Float
-" ------------------------------------------------------------------------------
-
-syntax keyword erdeBool true false
-
-syntax keyword erdeNil nil
-
-syntax match erdeInt '\<\d\+\>'
-syntax match erdeHex '\<0[xX]\%([[:xdigit:]]*\.\)\=[[:xdigit:]]\+\%([pP][-+]\=\d\+\)\=\>'
-syntax match erdeFloat '\<\d*\.\=\d\+\%([eE][-+]\=\d\+\)\=\>'
-syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
-
-syntax match erdeEscapeChar /\\[\\abfnrtvz'"{}]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}/ contained
-syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1' contains=erdeEscapeChar,erdeInterpolation
-syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]" contains=erdeEscapeChar,erdeInterpolation
-syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}' transparent contained contains=@erdeExpr
-
-" ------------------------------------------------------------------------------
-" Scopes
-" ------------------------------------------------------------------------------
-
-syntax keyword erdeLocal local
-syntax keyword erdeGlobal global
-syntax keyword erdeModule module
-
-syntax match erdeName '[a-zA-Z][a-zA-Z0-9]*' contained
-syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='=\@=' transparent contains=erdeName,erdeDestructure
-
-" ------------------------------------------------------------------------------
-" Logic Flow
-" ------------------------------------------------------------------------------
-
-syntax keyword erdeIf if nextgroup=erdeIfElseCondition
-syntax keyword erdeElseIf elseif nextgroup=erdeIfElseCondition
-syntax keyword erdeElse else nextgroup=erdeIfElseCondition
-syntax match erdeIfElseCondition '[^{]*' contained transparent nextgroup=erdeBlock
-
-syntax keyword erdeDo do skipwhite skipempty nextgroup=erdeBlock
-syntax keyword erdeFor for
-syntax keyword erdeIn in
-syntax keyword erdeBreak break contained
-syntax keyword erdeContinue continue contained
-syntax region erdeRepeatUntil start='\<repeat\>' end='\<until\>' contains=erdeBraces
-syntax keyword erdeWhile while
-syntax keyword erdeTry try skipwhite skipempty nextgroup=erdeBlock
-syntax keyword erdeCatch catch
-syntax keyword erdeReturn return
-
-" -----------------------------------------------------------------------------
-" Functions
-" -----------------------------------------------------------------------------
-
-syntax match erdeFunctionCall '[a-zA-Z][a-zA-Z0-9]*\s*(\@='
-
-syntax keyword erdeFunction function skipwhite skipempty nextgroup=erdeFunctionId
-syntax match erdeFunctionId contained
-  \ '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
-  \ skipwhite skipempty nextgroup=erdeFunctionParams
-syntax region erdeFunctionParams start='(' end=')' contained
-  \ contains=erdeName,erdeDestructure,@erdeExpr
-  \ skipwhite skipempty nextgroup=erdeBlock
-
-syntax match erdeSkinnyArrowFunction '->' skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeFatArrowFunction '=>' skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeArrowFunctionParams '(.*)\s*\%(->\|=>\)\@=' transparent
-  \ contains=erdeName,erdeDestructure,@erdeExpr
-  \ skipwhite skipempty nextgroup=erdeSkinnyArrowFunction,erdeFatArrowFunction
-
-" -----------------------------------------------------------------------------
-" Tables / Destructuring
-" -----------------------------------------------------------------------------
-
-syntax match erdeInlineKey ':[a-zA-Z][a-zA-Z0-9]*' contained
-syntax match erdeNameKey '[a-zA-Z][a-zA-Z0-9]*\s*=\@=' contained
-syntax region erdeExprKey matchgroup=erdeExprKeyBrackets start='\[' end='\]' contains=@erdeExpr contained
-syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}' contains=erdeInlineKey,erdeNameKey,erdeExprKey,@erdeExpr
-
-syntax region erdeArrayDestruct matchgroup=erdeDestructBrackets start='\[' end='\]' contains=erdeName contained
-syntax region erdeDestructure matchgroup=erdeTableBraces start='{' end='}' contains=erdeName,erdeArrayDestruct,@erdeExpr contained
-
-" ------------------------------------------------------------------------------
-" Blocks
+" Order matters here! Rules defined later will take precedence other those 
+" before it.
 " ------------------------------------------------------------------------------
 
 syntax cluster erdeExpr 
   \ contains=erdeOperator,erdeNumber,erdeFloat,erdeShortString,erdeLongString,erdeSkinnyArrowFunction,erdeFatArrowFunction,erdeTable
 
 syntax cluster erdeStatement
-  \ contains=erdeIf,erdeElseIf,erdeElse,erdeReturn
-syntax region erdeBlock matchgroup=erdeBlockBraces start='{' end='}' contains=@erdeStatement,@erdeExpr contained
+  \ contains=erdeBreak,erdeContinue,erdeIf,erdeElseIf,erdeElse,erdeReturn
 
-syntax cluster erdeLoopStatement
-  \ contains=@erdeStatement,erdeBreak,erdeContinue
-syntax region erdeLoopBlock start='{' end='}' contained
-  \ contains=@erdeLoopStatement,@erdeExpr
+" Keywords
 
-" ------------------------------------------------------------------------------
-" Highlighting
-"
-" Define the default highlighting.
-" For version 5.7 and earlier: only when not done already
-" For version 5.8 and later: only when an item doesn't have highlighting yet
-" ------------------------------------------------------------------------------
+syntax keyword erdeKeyword if elseif else do for in break continue repeat until while try catch return
 
-if version >= 508 || !exists('did_erde_syn_inits')
-  if version < 508
-    let did_erde_syn_inits = 1
-    command -nargs=+ HiLink hi link <args>
-  else
-    command -nargs=+ HiLink hi def link <args>
-  endif
+hi def link erdeKeyword Keyword
 
-  HiLink erdeError Error
+" Operators
 
-  " Operators
-  HiLink erdeOperator Operator
+syntax match erdeOperator '[#~|&<>=+*/%^:.?-]'
 
-  " Comments
-  HiLink erdeComment Comment
-  HiLink erdeCommentTags Todo
-  HiLink erdeShebang Comment
+hi def link erdeOperator Operator
 
-  " Types
-  HiLink erdeBool Boolean
-  HiLink erdeNil Type
-  HiLink erdeInt Number
-  HiLink erdeHex Number
-  HiLink erdeFloat Float
-  HiLink erdeEscapeChar SpecialChar
-  HiLink erdeShortString String
-  HiLink erdeLongString String
-  HiLink erdeInterpolation Noise
-  HiLink erdeInterpolationBraces Special
+" Surrounds
 
-  " Scopes
-  HiLink erdeLocal Type
-  HiLink erdeModule Type
-  HiLink erdeGlobal Type
-  HiLink erdeName Identifier
+syntax region erdeParens start='(' end=')' transparent contains=@erdeExpr
+syntax region erdeBrackets matchgroup=erdeOperator start='\[' end=']' transparent
+syntax region erdeOptParens matchgroup=erdeOperator start='?(' end=')' transparent
 
-  " Logic Flow
-  HiLink erdeIf Keyword
-  HiLink erdeElseIf Keyword
-  HiLink erdeElse Keyword
+syntax region erdeTable matchgroup=erdeBraces start='{' end='}' contained contains=@erdeExpr
+syntax region erdeBlock matchgroup=erdeBraces start='{' end='}' contains=@erdeStatement,@erdeExpr
 
-  HiLink erdeFor Keyword
-  HiLink erdeIn Keyword
-  HiLink erdeBreak Keyword
-  HiLink erdeContinue Keyword
+syntax match erdeError ')'
+syntax match erdeError '}'
+syntax match erdeError '\]'
 
-  HiLink erdeDo Keyword
-  HiLink erdeTry Keyword
-  HiLink erdeCatch Keyword
-  HiLink erdeRepeatUntil Keyword
-  HiLink erdeReturn Keyword
-  HiLink erdeWhile Keyword
+hi def link erdeBraces Structure
+hi def link erdeError Error
 
-  " Functions
-  HiLink erdeFunctionCall Function
-  HiLink erdeFunction Keyword
-  HiLink erdeFunctionId Function
-  HiLink erdeSkinnyArrowFunction Operator
-  HiLink erdeFatArrowFunction Operator
+" Comments
 
-  " Blocks
-  " TODO: change me to Noise
-  HiLink erdeBlockBraces Special
+syntax keyword erdeCommentTags contained NOTE TODO FIXME XXX TBD
+syntax region erdeComment start='--' end='$' contains=erdeCommentTags
+syntax region erdeComment start='--\[\z(=*\)\['  end='\]\z1\]' contains=erdeCommentTags
+syntax region erdeShebang start='^#!' end='$'
 
-  " Tables / Destructuring
-  HiLink erdeInlineKey Special
-  HiLink erdeNameKey Special
-  HiLink erdeExprKeyBrackets Special
-  HiLink erdeTableBraces Structure
-  HiLink erdeDestructBrackets Structure
+hi def link erdeCommentTags Todo
+hi def link erdeComment Comment
+hi def link erdeShebang Comment
 
-  delcommand HiLink
-end
+" Bool / Nil
+
+syntax keyword erdeBool true false
+syntax keyword erdeNil nil
+
+hi def link erdeBool Boolean
+hi def link erdeNil Type
+
+" Numbers
+
+syntax match erdeInt '\<\d\+\>'
+syntax match erdeHex '\<0[xX]\%([[:xdigit:]]*\.\)\=[[:xdigit:]]\+\%([pP][-+]\=\d\+\)\=\>'
+syntax match erdeFloat '\<\d*\.\=\d\+\%([eE][-+]\=\d\+\)\=\>'
+syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
+
+hi def link erdeInt Number
+hi def link erdeHex Number
+hi def link erdeFloat Float
+
+" Strings
+
+syntax match erdeEscapeChar /\\[\\abfnrtvz'"{}]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}/ contained
+syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1' contains=erdeEscapeChar,erdeInterpolation
+syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]" contains=erdeEscapeChar,erdeInterpolation
+syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}' transparent contained contains=@erdeExpr
+
+hi def link erdeEscapeChar SpecialChar
+hi def link erdeShortString String
+hi def link erdeLongString String
+hi def link erdeInterpolationBraces Special
+
+" Functions
+
+syntax match erdeFunctionCall '[a-zA-Z][a-zA-Z0-9]*\s*(\@='
+
+syntax keyword erdeFunction function skipwhite skipempty nextgroup=erdeFunctionId
+syntax match erdeFunctionId '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@=' contained skipwhite skipempty nextgroup=erdeFunctionParams
+syntax region erdeFunctionParams start='(' end=')' contained contains=erdeName,erdeDestructure,@erdeExpr
+
+hi def link erdeFunctionCall Function
+hi def link erdeFunction Keyword
+hi def link erdeFunctionId Function
+
+" Arrow Functions
+
+syntax match erdeSkinnyArrowFunction '->'
+syntax match erdeFatArrowFunction '=>'
+syntax match erdeArrowFunctionParams '(.*)\s*\%(->\|=>\)\@=' transparent contains=erdeName,erdeDestructure,@erdeExpr skipwhite skipempty nextgroup=erdeSkinnyArrowFunction,erdeFatArrowFunction
+
+hi def link erdeSkinnyArrowFunction Operator
+hi def link erdeFatArrowFunction Operator
+
+" Declarations
+
+syntax keyword erdeScope local global module
+syntax match erdeName '[a-zA-Z][a-zA-Z0-9]*' contained
+
+hi def link erdeScope Type
+hi def link erdeName Identifier
+
+syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='=\@=' transparent contains=erdeName,erdeDestructure
+
+" Destructure
+
+syntax region erdeArrayDestruct matchgroup=erdeDestructBrackets start='\[' end=']' contains=erdeName contained
+syntax region erdeDestructure matchgroup=erdeTableBraces start='{' end='}' contains=erdeName,erdeArrayDestruct,@erdeExpr contained
 
 " ------------------------------------------------------------------------------
 " Teardown
