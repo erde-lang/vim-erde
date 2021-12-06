@@ -29,12 +29,19 @@ syntax case match ":h :syn-case
 " before it.
 " ------------------------------------------------------------------------------
 
-syntax cluster erdeExpr 
-  \ contains=erdeOperator,erdeNumber,erdeFloat,erdeShortString,erdeLongString,erdeSkinnyArrowFunction,erdeFatArrowFunction,erdeTable
+syntax cluster erdeAll contains=
+  \ @erdeExpr,erdeKeyword,erdeFunction,erdeScope,erdeDeclaration
+
+syntax cluster erdeExpr contains=
+  \ erdeOperator,erdeBool,erdeNil,erdeInt,erdeHex,erdeFloat,
+  \ erdeShortString,erdeLongString,
+  \ erdeSkinnyArrowFunction,erdeFatArrowFunction,
+  \ erdeBlock
 
 " Keywords
 
-syntax keyword erdeKeyword if elseif else do for in break continue repeat until while try catch return
+syntax keyword erdeKeyword
+  \ if elseif else do for in break continue repeat until while try catch return
 
 hi def link erdeKeyword Keyword
 
@@ -50,8 +57,7 @@ syntax region erdeParens start='(' end=')' transparent contains=@erdeExpr
 syntax region erdeBrackets matchgroup=erdeOperator start='\[' end=']' transparent
 syntax region erdeOptParens matchgroup=erdeOperator start='?(' end=')' transparent
 
-syntax region erdeTable matchgroup=erdeBraces start='{' end='}' contained contains=@erdeExpr
-syntax region erdeBlock matchgroup=erdeBraces start='{' end='}' contains=erdeKeyword,@erdeExpr
+syntax region erdeBlock matchgroup=erdeBraces start='{' end='}' contains=@erdeAll
 
 syntax match erdeError ')'
 syntax match erdeError '}'
@@ -92,10 +98,14 @@ hi def link erdeFloat Float
 
 " Strings
 
-syntax match erdeEscapeChar /\\[\\abfnrtvz'"{}]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}/ contained
-syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1' contains=erdeEscapeChar,erdeInterpolation
-syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]" contains=erdeEscapeChar,erdeInterpolation
-syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}' transparent contained contains=@erdeExpr
+syntax match erdeEscapeChar contained
+  \ /\\[\\abfnrtvz'"{}]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}/
+syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1'
+  \ contains=erdeEscapeChar,erdeInterpolation
+syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
+  \ contains=erdeEscapeChar,erdeInterpolation
+syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}'
+  \ transparent contained contains=@erdeExpr
 
 hi def link erdeEscapeChar SpecialChar
 hi def link erdeShortString String
@@ -107,8 +117,10 @@ hi def link erdeInterpolationBraces Special
 syntax match erdeFunctionCall '[a-zA-Z][a-zA-Z0-9]*\s*(\@='
 
 syntax keyword erdeFunction function skipwhite skipempty nextgroup=erdeFunctionId
-syntax match erdeFunctionId '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@=' contained skipwhite skipempty nextgroup=erdeFunctionParams
-syntax region erdeFunctionParams start='(' end=')' contained contains=erdeName,erdeDestructure,@erdeExpr
+syntax match erdeFunctionId '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
+  \ contained skipwhite skipempty nextgroup=erdeFunctionParams
+syntax region erdeFunctionParams start='(' end=')' contained
+  \ contains=erdeName,erdeDestructure,@erdeExpr
 
 hi def link erdeFunctionCall Function
 hi def link erdeFunction Keyword
@@ -118,7 +130,9 @@ hi def link erdeFunctionId Function
 
 syntax match erdeSkinnyArrowFunction '->'
 syntax match erdeFatArrowFunction '=>'
-syntax match erdeArrowFunctionParams '(.*)\s*\%(->\|=>\)\@=' transparent contains=erdeName,erdeDestructure,@erdeExpr skipwhite skipempty nextgroup=erdeSkinnyArrowFunction,erdeFatArrowFunction
+syntax match erdeArrowFunctionParams '(.*)\s*\%(->\|=>\)\@=' transparent
+  \ skipwhite skipempty nextgroup=erdeSkinnyArrowFunction,erdeFatArrowFunction
+  \ contains=erdeName,erdeDestructure,@erdeExpr
 
 hi def link erdeSkinnyArrowFunction Operator
 hi def link erdeFatArrowFunction Operator
@@ -131,12 +145,17 @@ syntax match erdeName '[a-zA-Z][a-zA-Z0-9]*' contained
 hi def link erdeScope Type
 hi def link erdeName Identifier
 
-syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='=\@=' transparent contains=erdeName,erdeDestructure
+syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='=\@='
+  \ transparent contains=erdeName,erdeDestructure
 
 " Destructure
 
-syntax region erdeArrayDestruct matchgroup=erdeDestructBrackets start='\[' end=']' contains=erdeName contained
-syntax region erdeDestructure matchgroup=erdeTableBraces start='{' end='}' contains=erdeName,erdeArrayDestruct,@erdeExpr contained
+syntax region erdeArrayDestruct matchgroup=erdeDestructBrackets start='\[' end=']'
+  \ contained contains=erdeName
+syntax region erdeDestructure matchgroup=erdeBraces start='{' end='}'
+  \ contained contains=erdeName,erdeArrayDestruct,@erdeExpr
+
+hi def link erdeDestructBrackets Structure
 
 " ------------------------------------------------------------------------------
 " Teardown
