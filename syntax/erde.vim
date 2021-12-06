@@ -30,7 +30,7 @@ syntax case match ":h :syn-case
 " ------------------------------------------------------------------------------
 
 syntax cluster erdeAll contains=
-  \ @erdeExpr,erdeKeyword,erdeFunction,erdeScope,erdeDeclaration
+  \ @erdeExpr,erdeComment,erdeKeyword,erdeFunction,erdeScope,erdeDeclaration
 
 syntax cluster erdeExpr contains=
   \ erdeOperator,erdeBool,erdeNil,erdeInt,erdeHex,erdeFloat,
