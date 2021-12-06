@@ -140,7 +140,7 @@ hi def link erdeFatArrowFunction Operator
 " Declarations
 
 syntax keyword erdeScope local global module
-syntax match erdeName '[a-zA-Z][a-zA-Z0-9]*' contained
+syntax match erdeName '[a-zA-Z_][a-zA-Z0-9_]*' contained
 
 hi def link erdeScope Type
 hi def link erdeName Identifier
