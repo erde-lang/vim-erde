@@ -105,7 +105,7 @@ syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1'
 syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
   \ contains=erdeEscapeChar,erdeInterpolation
 syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}'
-  \ transparent contained contains=@erdeExpr
+  \ contained contains=@erdeExpr
 
 hi def link erdeEscapeChar SpecialChar
 hi def link erdeShortString String

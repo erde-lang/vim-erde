@@ -81,6 +81,7 @@ false
 30e+3
 30e-3
 
+'single {word} string'
 'single {99} string'
 "Breakdouble {99} string"
 
