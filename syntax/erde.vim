@@ -116,10 +116,11 @@ hi def link erdeInterpolationBraces Special
 
 " Functions
 
-syntax match erdeFunctionCall '[a-zA-Z][a-zA-Z0-9]*\s*(\@='
+syntax match erdeFunctionCall '[a-zA-Z_][a-zA-Z0-9_]*\s*(\@='
 
 syntax keyword erdeFunction function skipwhite skipempty nextgroup=erdeFunctionId
-syntax match erdeFunctionId '\([a-zA-Z][a-zA-Z0-9]*\.\)*\([a-zA-Z][a-zA-Z0-9]*:\)\=[a-zA-Z][a-zA-Z0-9]*\s*(\@='
+syntax match erdeFunctionId 
+  \ '\([a-zA-Z_][a-zA-Z0-9_]*\.\)*\([a-zA-Z_][a-zA-Z0-9_]*:\)\=[a-zA-Z_][a-zA-Z0-9_]*\s*(\@='
   \ contained skipwhite skipempty nextgroup=erdeFunctionParams
 syntax region erdeFunctionParams start='(' end=')' contained
   \ contains=erdeName,erdeDestructure,@erdeExpr
