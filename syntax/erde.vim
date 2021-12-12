@@ -55,7 +55,7 @@ hi def link erdeOperator Operator
 
 " Surrounds
 
-syntax region erdeParens start='(' end=')' transparent contains=@erdeExpr
+syntax region erdeParens start='(' end=')' transparent contains=@erdeExpr,erdeParens
 syntax region erdeBrackets matchgroup=erdeOperator start='\[' end=']' transparent
 syntax region erdeOptParens matchgroup=erdeOperator start='?(' end=')' transparent
 
@@ -133,7 +133,7 @@ hi def link erdeFunctionId Function
 
 syntax match erdeSkinnyArrowFunction '->'
 syntax match erdeFatArrowFunction '=>'
-syntax match erdeArrowFunctionParams '(.*)\s*\%(->\|=>\)\@=' transparent
+syntax match erdeArrowFunction '(.*)\s*\%(->\|=>\)' transparent
   \ skipwhite skipempty nextgroup=erdeSkinnyArrowFunction,erdeFatArrowFunction
   \ contains=erdeName,erdeDestructure,@erdeExpr
 
