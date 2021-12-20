@@ -37,7 +37,7 @@ syntax cluster erdeAll contains=
 syntax cluster erdeExpr contains=
   \ erdeOperator,erdeBool,erdeNil,erdeInt,erdeHex,erdeFloat,
   \ erdeShortString,erdeLongString,
-  \ erdeFunctionCall,erdeSkinnyArrowFunction,erdeFatArrowFunction,
+  \ erdeFunctionCall,erdeArrowFunction,erdeSkinnyArrowFunction,erdeFatArrowFunction,
   \ erdeBlock
 
 " Keywords
@@ -133,7 +133,7 @@ hi def link erdeFunctionId Function
 
 syntax match erdeSkinnyArrowFunction '->'
 syntax match erdeFatArrowFunction '=>'
-syntax match erdeArrowFunction '(.*)\s*\%(->\|=>\)' transparent
+syntax match erdeArrowFunction '\%((.*)\|{.*}\|[a-zA-Z_][a-zA-Z0-9_]*\)\s*\%(->\|=>\)' transparent
   \ skipwhite skipempty nextgroup=erdeSkinnyArrowFunction,erdeFatArrowFunction
   \ contains=erdeName,erdeDestructure,@erdeExpr
 

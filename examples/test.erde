@@ -136,8 +136,8 @@ catch() {}
 local x = {
   :mykey,
   mykey = { x = 2 },
-  ['mykey'] = () => { return },
-  mykey = () -> ({ 1, 2 }),
+  ['mykey'] = (a, b) => { return a + b },
+  mykey = a -> ({ 1, 2 }),
   mykey = 3,
 }
 
