@@ -148,7 +148,7 @@ syntax match erdeName '[a-zA-Z_][a-zA-Z0-9_]*' contained
 hi def link erdeScope Type
 hi def link erdeName Identifier
 
-syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='=\@='
+syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
   \ transparent contains=erdeName,erdeDestructure
 
 " Destructure
