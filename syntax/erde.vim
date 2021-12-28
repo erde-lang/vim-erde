@@ -2,9 +2,26 @@
 " Language: Erde
 " URL: https://github.com/erde-lang/vim-erde
 
-" Helpful Helps
-" :h group-name
-" :h pattern-atoms
+" ------------------------------------------------------------------------------
+" README
+"
+" Tables vs Blocks
+" ----------------
+"
+" It's difficult to tell Vim the difference between a block and table.
+" Consider the following:
+"
+"   if {} + {} { return {} }
+"
+" As a workaround for this, we exploit the fact that Terminals will never be
+" followed directly by a table and thus such a situation must be a block. In
+" the code, this means that all Terminals will have:
+"
+"   ... skipwhite skipempty nextgroup=erdeBlock
+"
+" This is also applied to erdeParens to cover the case of wrapped expressions,
+" function calls, and `catch() {}`.
+" ------------------------------------------------------------------------------
 
 " ------------------------------------------------------------------------------
 " Setup
@@ -29,43 +46,46 @@ syntax case match ":h :syn-case
 " before it.
 " ------------------------------------------------------------------------------
 
+syntax match erdeName '[a-zA-Z_][a-zA-Z0-9_]*' skipwhite skipempty nextgroup=erdeBlock
+
 syntax cluster erdeAll contains=
   \ @erdeExpr,erdeComment,erdeKeyword,
   \ erdeFunctionCall,erdeFunction,
   \ erdeScope,erdeDeclaration
 
 syntax cluster erdeExpr contains=
-  \ erdeOperator,erdeBool,erdeNil,erdeInt,erdeHex,erdeFloat,
+  \ erdeName,erdeOperator,erdeBool,erdeNil,
+  \ erdeInt,erdeHex,erdeFloat,
   \ erdeShortString,erdeLongString,
-  \ erdeFunctionCall,erdeArrowFunction,erdeSkinnyArrowFunction,erdeFatArrowFunction,
-  \ erdeBlock
-
-" Keywords
-
-syntax keyword erdeKeyword
-  \ if elseif else do for in break continue repeat until while try catch return
-
-hi def link erdeKeyword Keyword
+  \ erdeFunctionCall,erdeArrowFunction,erdeArrowFunctionOperator,
+  \ erdeTable
 
 " Operators
 
 syntax match erdeOperator '[#~|&<>=+*/%^:.?-]'
-
 hi def link erdeOperator Operator
+
+" Keywords
+
+syntax keyword erdeKeyword return if elseif for in break continue while until catch
+syntax keyword erdeKeyword do else repeat try skipwhite skipempty nextgroup=erdeBlock
+
+hi def link erdeKeyword Keyword
 
 " Surrounds
 
-syntax region erdeParens start='(' end=')' transparent contains=@erdeExpr,erdeParens
+syntax region erdeParens start='(' end=')' transparent
+  \ contains=@erdeExpr,erdeParens
+  \ skipwhite skipempty nextgroup=erdeBlock
+
 syntax region erdeBrackets matchgroup=erdeOperator start='\[' end=']' transparent
 syntax region erdeOptParens matchgroup=erdeOperator start='?(' end=')' transparent
-
-syntax region erdeBlock matchgroup=erdeBraces start='{' end='}' contains=@erdeAll
 
 syntax match erdeError ')'
 syntax match erdeError '}'
 syntax match erdeError '\]'
 
-hi def link erdeBraces Structure
+hi def link erdeBlockBraces Noise
 hi def link erdeError Error
 
 " Comments
@@ -81,8 +101,8 @@ hi def link erdeShebang Comment
 
 " Bool / Nil
 
-syntax keyword erdeBool true false
-syntax keyword erdeNil nil
+syntax keyword erdeBool true false skipwhite skipempty nextgroup=erdeBlock
+syntax keyword erdeNil nil skipwhite skipempty nextgroup=erdeBlock
 
 hi def link erdeBool Boolean
 hi def link erdeNil Type
@@ -90,75 +110,100 @@ hi def link erdeNil Type
 " Numbers
 
 syntax match erdeInt '\<\d\+\>'
+  \ skipwhite skipempty nextgroup=erdeBlock
 syntax match erdeHex '\<0[xX]\%([[:xdigit:]]*\.\)\=[[:xdigit:]]\+\%([pP][-+]\=\d\+\)\=\>'
+  \ skipwhite skipempty nextgroup=erdeBlock
 syntax match erdeFloat '\<\d*\.\=\d\+\%([eE][-+]\=\d\+\)\=\>'
+  \ skipwhite skipempty nextgroup=erdeBlock
 syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
+  \ skipwhite skipempty nextgroup=erdeBlock
 
 hi def link erdeInt Number
 hi def link erdeHex Number
 hi def link erdeFloat Float
 
 " Strings
+"
+" Need to define this after erdeBrackets for precedence!
 
 syntax match erdeEscapeChar contained
   \ /\\[\\abfnrtvz'"{}]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}/
-syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1'
-  \ contains=erdeEscapeChar,erdeInterpolation
-syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
-  \ contains=erdeEscapeChar,erdeInterpolation
 syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}'
   \ contained contains=@erdeExpr
+syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1'
+  \ contains=erdeEscapeChar,erdeInterpolation
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
+  \ contains=erdeEscapeChar,erdeInterpolation
+  \ skipwhite skipempty nextgroup=erdeBlock
 
 hi def link erdeEscapeChar SpecialChar
 hi def link erdeShortString String
 hi def link erdeLongString String
 hi def link erdeInterpolationBraces Special
 
+" Tables
+
+syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}'
+  \ contains=@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock
+
+hi def link erdeTableBraces Structure
+
 " Functions
 
 syntax match erdeFunctionCall '[a-zA-Z_][a-zA-Z0-9_]*\s*(\@='
+  \ skipwhite skipempty nextgroup=erdeFunctionCallParens
 
-syntax keyword erdeFunction function skipwhite skipempty nextgroup=erdeFunctionId
-syntax match erdeFunctionId 
-  \ '\([a-zA-Z_][a-zA-Z0-9_]*\.\)*\([a-zA-Z_][a-zA-Z0-9_]*:\)\=[a-zA-Z_][a-zA-Z0-9_]*\s*(\@='
+syntax keyword erdeFunctionKeyword function
+  \ skipwhite skipempty nextgroup=erdeFunction
+syntax match erdeFunction '\([a-zA-Z_][a-zA-Z0-9_]*\.\)*\([a-zA-Z_][a-zA-Z0-9_]*:\)\=[a-zA-Z_][a-zA-Z0-9_]*\s*(\@='
   \ contained skipwhite skipempty nextgroup=erdeFunctionParams
 syntax region erdeFunctionParams start='(' end=')' contained
-  \ contains=erdeName,erdeDestructure,@erdeExpr
+  \ contains=erdeNameDeclaration,erdeDestructure,@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock
 
 hi def link erdeFunctionCall Function
-hi def link erdeFunction Keyword
-hi def link erdeFunctionId Function
+hi def link erdeFunctionKeyword Keyword
+hi def link erdeFunction Function
 
 " Arrow Functions
 
-syntax match erdeSkinnyArrowFunction '->'
-syntax match erdeFatArrowFunction '=>'
+syntax match erdeArrowFunctionOperator '\%(->\|=>\)'
 syntax match erdeArrowFunction '\%((.*)\|{.*}\|[a-zA-Z_][a-zA-Z0-9_]*\)\s*\%(->\|=>\)' transparent
-  \ skipwhite skipempty nextgroup=erdeSkinnyArrowFunction,erdeFatArrowFunction
-  \ contains=erdeName,erdeDestructure,@erdeExpr
+  \ contains=erdeNameDeclaration,erdeDestructure,@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
 
-hi def link erdeSkinnyArrowFunction Operator
-hi def link erdeFatArrowFunction Operator
+hi def link erdeArrowFunctionOperator Operator
 
 " Declarations
 
 syntax keyword erdeScope local global module
-syntax match erdeName '[a-zA-Z_][a-zA-Z0-9_]*' contained
+syntax match erdeNameDeclaration '[a-zA-Z_][a-zA-Z0-9_]*' contained
 
 hi def link erdeScope Type
-hi def link erdeName Identifier
+hi def link erdeNameDeclaration Identifier
 
 syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
-  \ transparent contains=erdeName,erdeDestructure
+  \ transparent contains=erdeNameDeclaration,erdeDestructure
 
 " Destructure
 
 syntax region erdeArrayDestruct matchgroup=erdeDestructBrackets start='\[' end=']'
-  \ contained contains=erdeName
-syntax region erdeDestructure matchgroup=erdeBraces start='{' end='}'
-  \ contained contains=erdeName,erdeArrayDestruct,@erdeExpr
+  \ contained contains=erdeNameDeclaration
+syntax region erdeDestructure matchgroup=erdeDestructBraces start='{' end='}'
+  \ contained contains=erdeNameDeclaration,erdeArrayDestruct,@erdeExpr
 
 hi def link erdeDestructBrackets Structure
+hi def link erdeDestructBraces Structure
+
+" Block
+"
+" Need to define this after erdeTable to give it precedence in the case that
+" both are matched! (for example in erdeArrowFunction's nextgroup)
+
+syntax region erdeBlock matchgroup=erdeBlockBraces start='{' end='}'
+  \ contained contains=@erdeAll
 
 " ------------------------------------------------------------------------------
 " Teardown

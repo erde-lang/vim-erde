@@ -110,6 +110,8 @@ local a, { a, b, [ hello, world ] } = 1, 4
 
 do { }
 
+if {} + {} {}
+if a.b[c]() {}
 if test({1, 2}) { }
 elseif 1 { }
 else { }
@@ -135,7 +137,6 @@ catch() {}
 -- -----------------------------------------------------------------------------
 
 local x = {
-  :mykey,
   mykey = { x = 2 },
   ['mykey'] = (a, b) => { return a + b },
   mykey = a -> ({ 1, 2 }),
@@ -153,6 +154,7 @@ local function test.test:test({ a, [b] }) {}
 local x = () -> "hello"
 local x = () -> { return }
 local x = (a, b) => (1, 2, "hi")
+myfunc(() -> print('hello world'))
 
 test.test()
 test(1, 2, 3, a, b, c)
