@@ -44,7 +44,6 @@ a ^ b
 -- Multi char operators
 
 a .. b
-...a
 a == b
 a ~= b
 a <= b

@@ -64,7 +64,7 @@ syntax cluster erdeExpr contains=
 " function definition, table keys, etc).
 
 syntax match erdeName '[a-zA-Z_][a-zA-Z0-9_]*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
-syntax match erdeDotIndex '\.\@<=[a-zA-Z_][a-zA-Z0-9_]*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
+syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=[a-zA-Z_][a-zA-Z0-9_]*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
 hi def link erdeDotIndex Constant
 
@@ -151,10 +151,12 @@ hi def link erdeInterpolationBraces Special
 
 " Tables
 
+syntax match erdeTableKey '[a-zA-Z_][a-zA-Z0-9_]*\s*=\@=' contained
 syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}'
-  \ contains=@erdeExpr
+  \ contains=erdeTableKey,@erdeExpr
   \ skipwhite skipempty nextgroup=erdeBlock
 
+hi def link erdeTableKey Constant
 hi def link erdeTableBraces Structure
 
 " Functions
