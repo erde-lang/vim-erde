@@ -153,6 +153,7 @@ hi def link erdeTableBraces Structure
 " Functions
 
 syntax match erdeFunctionCall '[a-zA-Z_][a-zA-Z0-9_]*\s*(\@='
+  \ skipwhite skipempty nextgroup=erdeParens
 
 syntax keyword erdeFunctionKeyword function
   \ skipwhite skipempty nextgroup=erdeFunction
@@ -170,7 +171,7 @@ hi def link erdeFunction Function
 
 syntax match erdeArrowFunctionOperator '\%(->\|=>\)'
 syntax match erdeArrowFunction '\%((.*)\|{.*}\|[a-zA-Z_][a-zA-Z0-9_]*\)\s*\%(->\|=>\)' transparent
-  \ contains=erdeParens,erdeNameDeclaration,erdeDestructure,@erdeExpr
+  \ contains=erdeNameDeclaration,erdeDestructure,@erdeExpr
   \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
 
 hi def link erdeArrowFunctionOperator Operator
