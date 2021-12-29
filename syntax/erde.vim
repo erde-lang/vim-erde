@@ -46,8 +46,6 @@ syntax case match ":h :syn-case
 " before it.
 " ------------------------------------------------------------------------------
 
-syntax match erdeName '[a-zA-Z_][a-zA-Z0-9_]*' skipwhite skipempty nextgroup=erdeBlock
-
 syntax cluster erdeAll contains=
   \ @erdeExpr,erdeComment,erdeKeyword,
   \ erdeFunctionCall,erdeFunction,
@@ -59,6 +57,16 @@ syntax cluster erdeExpr contains=
   \ erdeShortString,erdeLongString,
   \ erdeFunctionCall,erdeArrowFunction,erdeArrowFunctionOperator,
   \ erdeTable
+
+" Names
+"
+" Need to define this first, as it is often overridden (function call,
+" function definition, table keys, etc).
+
+syntax match erdeName '[a-zA-Z_][a-zA-Z0-9_]*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
+syntax match erdeDotIndex '\.\@<=[a-zA-Z_][a-zA-Z0-9_]*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
+
+hi def link erdeDotIndex Constant
 
 " Operators
 
@@ -77,15 +85,14 @@ hi def link erdeKeyword Keyword
 syntax region erdeParens start='(' end=')' transparent
   \ contains=@erdeExpr,erdeParens
   \ skipwhite skipempty nextgroup=erdeBlock
-
-syntax region erdeBrackets matchgroup=erdeOperator start='\[' end=']' transparent
-syntax region erdeOptParens matchgroup=erdeOperator start='?(' end=')' transparent
+syntax region erdeBrackets start='\[' end=']' transparent
+  \ contains=@erdeExpr,erdeParens
+  \ skipwhite skipempty nextgroup=erdeBlock
 
 syntax match erdeError ')'
 syntax match erdeError '}'
 syntax match erdeError '\]'
 
-hi def link erdeBlockBraces Noise
 hi def link erdeError Error
 
 " Comments
@@ -204,6 +211,8 @@ hi def link erdeDestructBraces Structure
 
 syntax region erdeBlock matchgroup=erdeBlockBraces start='{' end='}'
   \ contained contains=@erdeAll
+
+hi def link erdeBlockBraces Noise
 
 " ------------------------------------------------------------------------------
 " Teardown
