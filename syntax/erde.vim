@@ -224,5 +224,3 @@ let b:current_syntax = 'erde'
 if main_syntax == 'erde'
   unlet main_syntax
 endif
-
-" :set syntax=vim
