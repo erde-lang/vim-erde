@@ -68,8 +68,8 @@ function! ErdeIndent()
   let currentl = substitute(getline(v:lnum), '--.*$', '', '')
   let i = s:ErdeCurrentLineIndent(prevlnum)
 
-  " add indentation for index chains
-  let index_chain = "^\\v\\s*[:.]\\w+"
+  " add indentation for index / pipe chains
+  let index_chain = '^\v\s*([:.]|\>\>\s*)\h\w*'
   if prevl !~# index_chain
     if currentl =~# index_chain " beginning of chain
       let i += shiftwidth()
