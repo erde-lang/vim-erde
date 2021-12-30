@@ -63,8 +63,8 @@ syntax cluster erdeExpr contains=
 " Need to define this first, as it is often overridden (function call,
 " function definition, table keys, etc).
 
-syntax match erdeName '[a-zA-Z_][a-zA-Z0-9_]*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
-syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=[a-zA-Z_][a-zA-Z0-9_]*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
+syntax match erdeName '\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
+syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
 hi def link erdeDotIndex Constant
 
@@ -151,7 +151,7 @@ hi def link erdeInterpolationBraces Special
 
 " Tables
 
-syntax match erdeTableKey '[a-zA-Z_][a-zA-Z0-9_]*\s*=\@=' contained
+syntax match erdeTableKey '\h\w*\s*=\@=' contained
 syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}'
   \ contains=erdeTableKey,@erdeExpr
   \ skipwhite skipempty nextgroup=erdeBlock
@@ -161,12 +161,12 @@ hi def link erdeTableBraces Structure
 
 " Functions
 
-syntax match erdeFunctionCall '[a-zA-Z_][a-zA-Z0-9_]*\s*(\@='
+syntax match erdeFunctionCall '\h\w*\s*(\@='
   \ skipwhite skipempty nextgroup=erdeParens
 
 syntax keyword erdeFunctionKeyword function
   \ skipwhite skipempty nextgroup=erdeFunction
-syntax match erdeFunction '\([a-zA-Z_][a-zA-Z0-9_]*\.\)*\([a-zA-Z_][a-zA-Z0-9_]*:\)\=[a-zA-Z_][a-zA-Z0-9_]*\s*(\@='
+syntax match erdeFunction '\(\h\w*\.\)*\(\h\w*:\)\=\h\w*\s*(\@='
   \ contained skipwhite skipempty nextgroup=erdeFunctionParams
 syntax region erdeFunctionParams start='(' end=')' contained
   \ contains=erdeNameDeclaration,erdeDestructure,@erdeExpr
@@ -179,7 +179,7 @@ hi def link erdeFunction Function
 " Arrow Functions
 
 syntax match erdeArrowFunctionOperator '\%(->\|=>\)'
-syntax match erdeArrowFunction '\%((.*)\|{.*}\|[a-zA-Z_][a-zA-Z0-9_]*\)\s*\%(->\|=>\)' transparent
+syntax match erdeArrowFunction '\%((.*)\|{.*}\|\h\w*\)\s*\%(->\|=>\)' transparent
   \ contains=erdeNameDeclaration,erdeDestructure,@erdeExpr
   \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
 
@@ -188,7 +188,7 @@ hi def link erdeArrowFunctionOperator Operator
 " Declarations
 
 syntax keyword erdeScope local global module
-syntax match erdeNameDeclaration '[a-zA-Z_][a-zA-Z0-9_]*' contained
+syntax match erdeNameDeclaration '\h\w*' contained
 
 hi def link erdeScope Type
 hi def link erdeNameDeclaration Identifier
