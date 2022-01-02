@@ -166,3 +166,15 @@ return (
   2,
   3,
 )
+
+-- -----------------------------------------------------------------------------
+-- Std Library
+-- -----------------------------------------------------------------------------
+
+coroutine.create()
+coroutine.createee()
+
+-- Anti-Examples
+
+acoroutine.create()
+a.coroutine.create()
