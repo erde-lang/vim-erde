@@ -181,6 +181,7 @@ return (
 -- Std Library
 -- -----------------------------------------------------------------------------
 
+local x = require('hello')
 _VERSION
 
 coroutine.create()
@@ -188,5 +189,6 @@ coroutine.createee()
 
 -- Anti-Examples
 
+a.assert()
 acoroutine.create()
 a.coroutine.create()

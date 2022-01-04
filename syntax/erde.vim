@@ -39,6 +39,14 @@ endif
 syntax sync fromstart ":h :syn-sync-first
 syntax case match ":h :syn-case
 
+function s:ErdeKeywords(groupName, keywords)
+  exec 'syntax match ' . a:groupName . ' "\([.:]\)\@<!\(' . join(a:keywords, '\|') . '\)"'
+endfunction
+
+function s:ErdeStdProperties(name, properties)
+  exec 'syntax match erdeStdProperty "\(\([.:]\)\@<!\<' . a:name . '\.\)\@<=\(' . join(a:properties, '\|') . '\)\>"'
+endfunction
+
 " ------------------------------------------------------------------------------
 " Syntax
 "
@@ -101,13 +109,13 @@ hi def link erdeCommentTags Todo
 hi def link erdeComment Comment
 hi def link erdeShebang Comment
 
-" Bool / Nil
+" Language Constants
 
-syntax keyword erdeBool true false skipwhite skipempty nextgroup=erdeBlock
-syntax keyword erdeNil nil skipwhite skipempty nextgroup=erdeBlock
+syntax keyword erdeConstant _G _VERSION _ENV skipwhite skipempty nextgroup=erdeBlock
+syntax keyword erdeBuiltIn nil true false skipwhite skipempty nextgroup=erdeBlock
 
-hi def link erdeBool Boolean
-hi def link erdeNil Type
+hi def link erdeConstant Constant
+hi def link erdeBuiltIn Boolean
 
 " Numbers
 
@@ -200,6 +208,53 @@ syntax region erdeDestructure matchgroup=erdeDestructBraces start='{' end='}'
 
 hi def link erdeDestructBrackets Structure
 hi def link erdeDestructBraces Structure
+
+" Stdlib
+
+if !exists('g:erde_disable_stdlib_syntax') || g:erde_disable_stdlib_syntax != 1
+  call s:ErdeKeywords('erdeStdFunction', [
+    \ 'assert',
+    \ 'collectgarbage',
+    \ 'dofile',
+    \ 'error',
+    \ 'getfenv',
+    \ 'getmetatable',
+    \ 'ipairs',
+    \ 'loadfile',
+    \ 'loadstring',
+    \ 'module',
+    \ 'next',
+    \ 'pairs',
+    \ 'pcall',
+    \ 'print',
+    \ 'rawequal',
+    \ 'rawget',
+    \ 'rawset',
+    \ 'require',
+    \ 'select',
+    \ 'setfenv',
+    \ 'setmetatable',
+    \ 'tonumber',
+    \ 'tostring',
+    \ 'type',
+    \ 'unpack',
+    \ 'xpcall',
+  \])
+
+  syntax match erdeStdModule '\([.:]\)\@<!\(coroutine\|debug\|io\|math\|os\|package\|string\|table\)'
+  call s:ErdeStdProperties('coroutine', ['create', 'resume', 'running', 'status', 'wrap', 'yield' ])
+  call s:ErdeStdProperties('debug', ['debug', '[gs]etfenv', '[gs]ethook', 'getinfo', '[gs]etlocal', '[gs]etmetatable', 'getregistry', '[gs]etupvalue', 'traceback'])
+  call s:ErdeStdProperties('io', ['close', 'flush', 'input', 'lines', 'open', 'output', 'popen', 'read', 'tmpfile', 'type', 'write'])
+  call s:ErdeStdProperties('math', ['abs', 'acos', 'asin', 'atan2?', 'ceil', 'cosh?', 'deg', 'exp', 'floor', 'fmod', 'frexp', 'ldexp', 'log', 'log10', 'max', 'min', 'modf', 'pow', 'rad', 'random', 'randomseed', 'sinh?', 'sqrt', 'tanh'])
+  call s:ErdeStdProperties('os', ['clock', 'date', 'difftime', 'execute', 'exit', 'getenv', 'remove', 'rename', 'setlocale', 'time', 'tmpname'])
+  call s:ErdeStdProperties('package', ['cpath', 'loaded', 'loadlib', 'path', 'preload', 'seeall'])
+  call s:ErdeStdProperties('string', ['byte', 'char', 'dump', 'find', 'format', 'gmatch', 'gsub', 'len', 'lower', 'match', 'rep', 'reverse', 'sub', 'upper'])
+  call s:ErdeStdProperties('table', ['concat', 'insert', 'maxn', 'remove', 'sort'])
+
+  hi def link erdeStdModule Type
+  hi def link erdeStdFunction Constant
+  hi def link erdeStdProperty Constant 
+endif
 
 " Block
 "
