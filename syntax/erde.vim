@@ -39,8 +39,14 @@ endif
 syntax sync fromstart ":h :syn-sync-first
 syntax case match ":h :syn-case
 
-function s:ErdeKeywords(groupName, keywords)
-  exec 'syntax match ' . a:groupName . ' "\([.:]\)\@<!\(' . join(a:keywords, '\|') . '\)"'
+function s:ErdeKeywords(groupName, nextGroup, keywords)
+  let cmd = 'syntax match ' . a:groupName . ' "\([.:]\)\@<!\<\(' . join(a:keywords, '\|') . '\)\>"'
+
+  if strlen(a:nextGroup) > 0
+    let cmd = cmd . ' skipwhite skipempty nextgroup=' . a:nextGroup
+  endif
+
+  exec cmd
 endfunction
 
 function s:ErdeStdProperties(name, properties)
@@ -75,15 +81,6 @@ hi def link erdeDotIndex Constant
 
 syntax match erdeOperator '[#~|&<>=+*/%^:.?-]'
 hi def link erdeOperator Operator
-
-" Keywords
-
-syntax keyword erdeKeyword return if elseif for in break continue while until catch
-syntax keyword erdeKeyword do else repeat try skipwhite skipempty nextgroup=erdeBlock
-
-hi def link erdeKeyword Keyword
-
-" Surrounds
 
 syntax region erdeParens start='(' end=')' transparent
   \ contains=@erdeExpr,erdeParens
@@ -167,8 +164,7 @@ hi def link erdeTableBraces Structure
 syntax match erdeFunctionCall '\h\w*\s*(\@='
   \ skipwhite skipempty nextgroup=erdeParens
 
-syntax keyword erdeFunctionKeyword function
-  \ skipwhite skipempty nextgroup=erdeFunction
+call s:ErdeKeywords('erdeFunctionKeyword', 'erdeFunction', ['function'])
 syntax match erdeFunction '\(\h\w*\.\)*\(\h\w*:\)\=\h\w*\s*(\@='
   \ contained skipwhite skipempty nextgroup=erdeFunctionParams
 syntax region erdeFunctionParams start='(' end=')' contained
@@ -190,7 +186,7 @@ hi def link erdeArrowFunctionOperator Operator
 
 " Declarations
 
-syntax keyword erdeScope local global module
+call s:ErdeKeywords('erdeScope', '', ['local', 'module', 'global'])
 syntax match erdeNameDeclaration '\h\w*' contained
 
 hi def link erdeScope Type
@@ -212,7 +208,7 @@ hi def link erdeDestructBraces Structure
 " Stdlib
 
 if !exists('g:erde_disable_stdlib_syntax') || g:erde_disable_stdlib_syntax != 1
-  call s:ErdeKeywords('erdeStdFunction', [
+  call s:ErdeKeywords('erdeStdFunction', '', [
     \ 'assert',
     \ 'collectgarbage',
     \ 'dofile',
@@ -255,6 +251,16 @@ if !exists('g:erde_disable_stdlib_syntax') || g:erde_disable_stdlib_syntax != 1
   hi def link erdeStdFunction Constant
   hi def link erdeStdProperty Constant 
 endif
+
+" Keywords
+"
+" Need to define this after erdeFunctionCall to give precedence for `catch()`
+
+call s:ErdeKeywords('erdeKeyword', '', ['return', 'if', 'elseif', 'for', 'in', 'break', 'continue', 'while', 'until', 'catch'])
+call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['return', 'do', 'else', 'repeat', 'try'])
+
+hi def link erdeKeyword Keyword
+
 
 " Block
 "
