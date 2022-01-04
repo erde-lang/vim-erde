@@ -46,13 +46,8 @@ syntax case match ":h :syn-case
 " before it.
 " ------------------------------------------------------------------------------
 
-syntax cluster erdeAll contains=
-  \ @erdeExpr,erdeComment,erdeKeyword,
-  \ erdeFunctionCall,erdeFunction,
-  \ erdeScope,erdeDeclaration
-
 syntax cluster erdeExpr contains=
-  \ erdeName,erdeOperator,erdeBool,erdeNil,
+  \ erdeComment,erdeName,erdeOperator,erdeBool,erdeNil,
   \ erdeInt,erdeHex,erdeFloat,
   \ erdeShortString,erdeLongString,
   \ erdeFunctionCall,erdeArrowFunction,erdeArrowFunctionOperator,
@@ -212,7 +207,7 @@ hi def link erdeDestructBraces Structure
 " both are matched! (for example in erdeArrowFunction's nextgroup)
 
 syntax region erdeBlock matchgroup=erdeBlockBraces start='{' end='}'
-  \ contained contains=@erdeAll
+  \ contained contains=TOP
 
 hi def link erdeBlockBraces Noise
 
