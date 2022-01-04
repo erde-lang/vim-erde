@@ -218,7 +218,6 @@ if !exists('g:erde_disable_stdlib_syntax') || g:erde_disable_stdlib_syntax != 1
     \ 'ipairs',
     \ 'loadfile',
     \ 'loadstring',
-    \ 'module',
     \ 'next',
     \ 'pairs',
     \ 'pcall',
