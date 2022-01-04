@@ -109,9 +109,11 @@ hi def link erdeShebang Comment
 " Language Constants
 
 syntax keyword erdeConstant _G _VERSION _ENV skipwhite skipempty nextgroup=erdeBlock
+syntax keyword erdeSelf self skipwhite skipempty nextgroup=erdeBlock
 syntax keyword erdeBuiltIn nil true false skipwhite skipempty nextgroup=erdeBlock
 
 hi def link erdeConstant Constant
+hi def link erdeSelf Special
 hi def link erdeBuiltIn Boolean
 
 " Numbers
