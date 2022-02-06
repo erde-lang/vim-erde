@@ -165,11 +165,11 @@ hi def link erdeTableBraces Structure
 
 " Functions
 
-syntax match erdeFunctionCall '\h\w*\s*(\@='
+syntax match erdeFunctionCall '\h\w*\(?\=(\)\@='
   \ skipwhite skipempty nextgroup=erdeParens
 
 call s:ErdeKeywords('erdeFunctionKeyword', 'erdeFunction', ['function'])
-syntax match erdeFunction '\(\h\w*\.\)*\(\h\w*:\)\=\h\w*\s*(\@='
+syntax match erdeFunction '\(\h\w*\.\)*\(\h\w*:\)\=\h\w*(\@='
   \ contained skipwhite skipempty nextgroup=erdeFunctionParams
 syntax region erdeFunctionParams start='(' end=')' contained
   \ contains=erdeNameDeclaration,erdeDestructure,@erdeExpr

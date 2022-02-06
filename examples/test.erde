@@ -163,6 +163,9 @@ test(1, 2, 3, a, b, c)
 test.test(1, 2, 3, a, b, c)
 test.test:test(1, 2, 3, a, b, c)
 test?.test[1]:test(1, 2, 3, a, b, c)
+test?:test(1, 2, 3, a, b, c)
+test:test?(1, 2, 3, a, b, c)
+test.test?(1, 2, 3, a, b, c)
 
 return {}
 
