@@ -81,7 +81,7 @@ hi def link erdeDotIndex Constant
 
 " Operators
 
-syntax match erdeOperator '[#~|&<>=+*/%^:.?-]'
+syntax match erdeOperator '[!#~|&<>=+*/%^:.?-]'
 hi def link erdeOperator Operator
 
 syntax region erdeParens start='(' end=')' transparent

@@ -10,10 +10,12 @@ this is a block comment
 
 -- Single char operators
 
+!a
 #a
 ~a
 a | b
 a & b
+a ~ b
 a + b
 a - b
 a < b
@@ -30,17 +32,15 @@ a ^ b
 
 a .. b
 a == b
-a ~= b
+a != b
 a <= b
 a >= b
-a .| b
-a .& b
-a .~ b
-a .<< b
-a .>> b
-a // b
-
-(1, 2, 3) >> test
+a || b
+a && b
+a << b
+a >> b
+a += b
+a ~= b
 
 a ? b : c
 a ?? b
