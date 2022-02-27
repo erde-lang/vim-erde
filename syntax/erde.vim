@@ -77,7 +77,7 @@ syntax cluster erdeExpr contains=
 syntax match erdeName '\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
-hi def link erdeDotIndex Constant
+hi def link erdeDotIndex Constant " keep this consistent w/ erdeSelfName
 
 " Operators
 
@@ -111,12 +111,17 @@ hi def link erdeShebang Comment
 " Language Constants
 
 syntax keyword erdeConstant _G _VERSION _ENV skipwhite skipempty nextgroup=erdeBlock
-syntax keyword erdeSelf self skipwhite skipempty nextgroup=erdeBlock
 syntax keyword erdeBuiltIn nil true false skipwhite skipempty nextgroup=erdeBlock
 
 hi def link erdeConstant Constant
-hi def link erdeSelf Special
 hi def link erdeBuiltIn Boolean
+
+syntax keyword erdeSelf self skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeSelf '\$' skipwhite skipempty nextgroup=erdeSelfName,erdeBlock
+syntax match erdeSelfName '\h\w*' skipwhite skipempty nextgroup=erdeBlock
+
+hi def link erdeSelf Special
+hi def link erdeSelfName Constant " keep this consistent w/ erdeDotIndex
 
 " Numbers
 
