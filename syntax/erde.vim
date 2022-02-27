@@ -190,13 +190,13 @@ hi def link erdeArrowFunctionOperator Operator
 
 " Declarations
 
-call s:ErdeKeywords('erdeScope', '', ['local', 'module', 'global'])
+call s:ErdeKeywords('erdeScope', '', ['local', 'global', 'module', 'main'])
 syntax match erdeNameDeclaration '\h\w*' contained
 
 hi def link erdeScope Type
 hi def link erdeNameDeclaration Identifier
 
-syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
+syntax region erdeDeclaration start='\%(local\|global\|module\|main\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
   \ transparent contains=erdeNameDeclaration,erdeDestructure
 
 " Destructure

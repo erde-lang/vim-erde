@@ -93,6 +93,7 @@ local a, b
 local a = 4
 global b = 4
 module c = 4
+main d = {}
 
 local a, { a, b, [ hello, world ] } = 1, 4
 local {
@@ -148,6 +149,11 @@ x.catch()
 -- -----------------------------------------------------------------------------
 -- Functions
 -- -----------------------------------------------------------------------------
+
+local function test() {}
+global function test() {}
+module function test() {}
+main function test() {}
 
 function test(a, b = 3, ...c) {}
 local function test.test:test() {}
