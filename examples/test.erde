@@ -98,6 +98,7 @@ module c = 4
 main d = {}
 
 local a, { a, b, [ hello, world ] } = 1, 4
+local [ hello, world ] = myfunc()
 local {
   a,
   b
@@ -120,6 +121,8 @@ while x {}
 
 for i = 1, 2 { }
 for k, v in ipairs() { }
+for { test } in myiter() { }
+for [ test ] in myiter() { }
 
 return
 

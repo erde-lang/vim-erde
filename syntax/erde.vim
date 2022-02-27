@@ -202,12 +202,12 @@ hi def link erdeScope Type
 hi def link erdeNameDeclaration Identifier
 
 syntax region erdeDeclaration start='\%(local\|global\|module\|main\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
-  \ transparent contains=erdeNameDeclaration,erdeDestructure
+  \ transparent contains=erdeNameDeclaration,erdeDestructure,erdeArrayDestruct
 
 " Destructure
 
 syntax region erdeArrayDestruct matchgroup=erdeDestructBrackets start='\[' end=']'
-  \ contained contains=erdeNameDeclaration
+  \ contains=erdeNameDeclaration
 syntax region erdeDestructure matchgroup=erdeDestructBraces start='{' end='}'
   \ contained contains=erdeNameDeclaration,erdeArrayDestruct,@erdeExpr
 
