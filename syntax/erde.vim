@@ -264,7 +264,7 @@ endif
 "
 " Need to define this after erdeFunctionCall to give precedence for `catch()`
 
-call s:ErdeKeywords('erdeKeyword', '', ['return', 'if', 'elseif', 'for', 'in', 'break', 'continue', 'while', 'until', 'catch'])
+call s:ErdeKeywords('erdeKeyword', '', ['return', 'if', 'elseif', 'for', 'in', 'break', 'continue', 'while', 'until', 'catch', 'goto'])
 call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['do', 'else', 'repeat', 'try'])
 
 hi def link erdeKeyword Keyword
