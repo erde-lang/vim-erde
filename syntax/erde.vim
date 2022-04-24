@@ -266,20 +266,32 @@ endif
 " Need to define this after erdeFunctionCall to give precedence for `catch()`
 
 call s:ErdeKeywords('erdeKeyword', '', ['return', 'if', 'elseif', 'for', 'in', 'break', 'continue', 'while', 'until', 'catch', 'goto'])
-call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['do', 'else', 'repeat', 'try'])
+call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['else', 'repeat', 'try'])
 
 hi def link erdeKeyword Keyword
-
 
 " Block
 "
 " Need to define this after erdeTable to give it precedence in the case that
 " both are matched! (for example in erdeArrowFunction's nextgroup)
 
+" keep this consistent w/ erdeDoBlock (except nextgroup=erdeBlock)
 syntax region erdeBlock matchgroup=erdeBlockBraces start='{' end='}'
   \ contained contains=TOP
 
 hi def link erdeBlockBraces Noise
+
+" Do Block
+"
+" Keep this separate, as do blocks in erde can also be terminals (and thus
+" require nextgroup=erdeBlock)
+
+call s:ErdeKeywords('erdeKeyword', 'erdeDoBlock', ['do'])
+
+" keep this consistent w/ erdeBlock (except nextgroup=erdeBlock)
+syntax region erdeDoBlock matchgroup=erdeBlockBraces start='{' end='}'
+  \ contained contains=TOP 
+  \ skipwhite skipempty nextgroup=erdeBlock
 
 " ------------------------------------------------------------------------------
 " Teardown
