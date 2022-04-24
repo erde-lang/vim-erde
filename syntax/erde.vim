@@ -139,26 +139,6 @@ hi def link erdeInt Number
 hi def link erdeHex Number
 hi def link erdeFloat Float
 
-" Strings
-"
-" Need to define this after erdeBrackets for precedence!
-
-syntax match erdeEscapeChar contained
-  \ /\\[\\abfnrtvz'"{}]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}/
-syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}'
-  \ contained contains=@erdeExpr
-syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1'
-  \ contains=erdeEscapeChar,erdeInterpolation
-  \ skipwhite skipempty nextgroup=erdeBlock
-syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
-  \ contains=erdeEscapeChar,erdeInterpolation
-  \ skipwhite skipempty nextgroup=erdeBlock
-
-hi def link erdeEscapeChar SpecialChar
-hi def link erdeShortString String
-hi def link erdeLongString String
-hi def link erdeInterpolationBraces Special
-
 " Tables
 
 syntax match erdeTableKey '\h\w*\s*=\@=' contained
@@ -214,6 +194,26 @@ syntax region erdeDestructure matchgroup=erdeDestructBraces start='{' end='}'
 
 hi def link erdeDestructBrackets Structure
 hi def link erdeDestructBraces Structure
+
+" Strings
+"
+" Need to define this after erdeBrackets and erdeDestructure for precedence!
+
+syntax match erdeEscapeChar contained
+  \ /\\[\\abfnrtvz'"{}]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}/
+syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}'
+  \ contained contains=@erdeExpr
+syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1'
+  \ contains=erdeEscapeChar,erdeInterpolation
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
+  \ contains=erdeEscapeChar,erdeInterpolation
+  \ skipwhite skipempty nextgroup=erdeBlock
+
+hi def link erdeEscapeChar SpecialChar
+hi def link erdeShortString String
+hi def link erdeLongString String
+hi def link erdeInterpolationBraces Special
 
 " Stdlib
 
