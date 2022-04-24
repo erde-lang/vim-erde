@@ -119,7 +119,7 @@ hi def link erdeBuiltIn Boolean
 
 syntax keyword erdeSelf self skipwhite skipempty nextgroup=erdeBlock
 syntax match erdeSelf '\$' skipwhite skipempty nextgroup=erdeSelfName,erdeBlock
-syntax match erdeSelfName '\h\w*' skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeSelfName '\h\w*' contained skipwhite skipempty nextgroup=erdeBlock
 
 hi def link erdeSelf Special
 hi def link erdeSelfName Constant " keep this consistent w/ erdeDotIndex
