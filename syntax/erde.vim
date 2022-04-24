@@ -77,6 +77,7 @@ syntax cluster erdeExpr contains=
 syntax match erdeName '\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
+hi def link erdeName Identifier
 hi def link erdeDotIndex Constant " keep this consistent w/ erdeSelfName
 
 " Operators
@@ -202,7 +203,7 @@ hi def link erdeScope Type
 hi def link erdeNameDeclaration Identifier
 
 syntax region erdeDeclaration start='\%(local\|global\|module\|main\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
-  \ transparent contains=erdeNameDeclaration,erdeDestructure,erdeArrayDestruct
+  \ transparent contains=erdeParens,erdeNameDeclaration,erdeDestructure,erdeArrayDestruct
 
 " Destructure
 
