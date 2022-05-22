@@ -207,6 +207,8 @@ local function test.test:test({ a, [b] }) {}
 local x = () -> "hello"
 local x = () -> { return }
 local x = (a, b) => (1, 2, "hi")
+local x = { hello } -> { return }
+local x = [ hello ] -> { return }
 myfunc(() -> print('hello world'))
 
 test.test()

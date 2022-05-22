@@ -176,15 +176,6 @@ hi def link erdeFunctionCall Function
 hi def link erdeFunctionKeyword Keyword
 hi def link erdeFunction Function
 
-" Arrow Functions
-
-syntax match erdeArrowFunctionOperator '\%(->\|=>\)'
-syntax match erdeArrowFunction '\%((.*)\|{.*}\|\h\w*\)\s*\%(->\|=>\)' transparent
-  \ contains=@erdeExpr
-  \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
-
-hi def link erdeArrowFunctionOperator Operator
-
 " Declarations
 
 call s:ErdeKeywords('erdeScope', '', ['local', 'global', 'module'])
@@ -274,6 +265,18 @@ syntax region erdeArrayDestructure matchgroup=erdeBrackets start='\[' end=']'
 
 hi def link erdeField Identifier
 hi def link erdeAliasedField Identifier
+
+" Arrow Functions
+"
+" Need to define this after erdeMapDestructure and erdeArrayDestructure so
+" that our regex match for {.*} takes precedence!
+
+syntax match erdeArrowFunctionOperator '\%(->\|=>\)'
+syntax match erdeArrowFunction '\%((.*)\|{.*}\|\|\[.*\]\h\w*\)\s*\%(->\|=>\)' transparent
+  \ contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
+
+hi def link erdeArrowFunctionOperator Operator
 
 " Block
 "
