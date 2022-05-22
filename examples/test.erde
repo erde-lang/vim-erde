@@ -159,6 +159,9 @@ catch {
 try {}
 catch {} {}
 
+try {}
+catch [ print ] {}
+
 goto test
 ::test::
 

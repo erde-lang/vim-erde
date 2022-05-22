@@ -80,6 +80,15 @@ syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*' skipwhite skipempty nextgro
 hi def link erdeName Identifier
 hi def link erdeDotIndex Constant
 
+" Keywords
+"
+" Need to define this after erdeName.
+
+call s:ErdeKeywords('erdeKeyword', '', ['return', 'if', 'elseif', 'for', 'in', 'break', 'continue', 'while', 'until', 'catch', 'goto'])
+call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['else', 'repeat', 'try'])
+
+hi def link erdeKeyword Keyword
+
 " Operators / Surrounds
 
 syntax match erdeOperator '[!#~|&<>=+*/%^:.?-]'
@@ -231,15 +240,6 @@ if !exists('g:erde_disable_stdlib_syntax') || g:erde_disable_stdlib_syntax != 1
   hi def link erdeStdProperty Constant 
 endif
 
-" Keywords
-"
-" Need to define this after erdeFunctionCall to give precedence for `catch()`
-
-call s:ErdeKeywords('erdeKeyword', '', ['return', 'if', 'elseif', 'for', 'in', 'break', 'continue', 'while', 'until', 'catch', 'goto'])
-call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['else', 'repeat', 'try'])
-
-hi def link erdeKeyword Keyword
-
 " Tables / Destructure
 "
 " Need to define this after erdeStdFunction / erdeStdModule so we don't
@@ -266,14 +266,26 @@ syntax region erdeArrayDestructure matchgroup=erdeBrackets start='\[' end=']'
 hi def link erdeField Identifier
 hi def link erdeAliasedField Identifier
 
+" Catch
+"
+" Need to define this after erdeMapDestructure and erdeArrayDestructure so
+" that our regex match for {.*} and [.*] take precedence!
+
+syntax match erdeCatch '\%(catch\)\@<=\s*{\@=' transparent 
+  \ skipwhite skipempty nextgroup=erdeBlock
+
+syntax match erdeCatchDestructure '\%(catch\)\@<=\s*\%({.*}\|\[.*\]\|\h\w*\)\s*{\@='
+  \ transparent contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock
+
 " Arrow Functions
 "
 " Need to define this after erdeMapDestructure and erdeArrayDestructure so
-" that our regex match for {.*} takes precedence!
+" that our regex match for {.*} and [.*] take precedence!
 
 syntax match erdeArrowFunctionOperator '\%(->\|=>\)'
-syntax match erdeArrowFunction '\%((.*)\|{.*}\|\|\[.*\]\h\w*\)\s*\%(->\|=>\)' transparent
-  \ contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
+syntax match erdeArrowFunction '\%((.*)\|{.*}\|\|\[.*\]\|\h\w*\)\s*\%(->\|=>\)'
+  \ transparent contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
   \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
 
 hi def link erdeArrowFunctionOperator Operator
