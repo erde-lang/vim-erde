@@ -84,8 +84,6 @@ false
 'single \n string'
 
 self
-$myvar
-$.myvar
 
 -- -----------------------------------------------------------------------------
 -- Scopes / Vars
@@ -95,10 +93,13 @@ local a, b
 local a = 4
 global b = 4
 module c = 4
-main d = {}
 
-local a, { a = 2, b, [ hello, world ] } = 1, 4
+local a, { a = 2, b } = 1, 4
+
 local [ hello, world ] = myfunc()
+
+local { print } = myfunc()
+
 local {
   a,
   b
@@ -152,7 +153,11 @@ while true {
 }
 
 try {}
-catch() {}
+catch {
+}
+
+try {}
+catch {} {}
 
 goto test
 ::test::
@@ -166,6 +171,7 @@ if do {} {
 
 local x = { z = { x } }
 local x = {
+  print = '',
   mykey = { x = 2 },
   ['mykey'] = (a, b) => { return a + b },
   mykey = a -> ({ 1, 2 }),
@@ -193,7 +199,6 @@ x.catch()
 local function test() {}
 global function test() {}
 module function test() {}
-main function test() {}
 
 function test(a, b = 3, ...c) {}
 local function test.test:test() {}

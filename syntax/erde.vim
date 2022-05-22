@@ -19,8 +19,8 @@
 "
 "   ... skipwhite skipempty nextgroup=erdeBlock
 "
-" This is also applied to erdeParens to cover the case of wrapped expressions,
-" function calls, and `catch() {}`.
+" This is also applied to erdeParens to cover the case of wrapped expressions
+" and function calls.
 " ------------------------------------------------------------------------------
 
 " ------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ syntax cluster erdeExpr contains=
   \ erdeInt,erdeHex,erdeFloat,
   \ erdeShortString,erdeLongString,
   \ erdeFunctionCall,erdeArrowFunction,erdeArrowFunctionOperator,
-  \ erdeBracketGroup,erdeBraceGroup
+  \ erdeTable
 
 " Names
 "
@@ -78,7 +78,7 @@ syntax match erdeName '\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlo
 syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
 hi def link erdeName Identifier
-hi def link erdeDotIndex Constant " keep this consistent w/ erdeSelfName
+hi def link erdeDotIndex Constant
 
 " Operators / Surrounds
 
@@ -89,14 +89,9 @@ syntax region erdeParens start='(' end=')' transparent
   \ contains=@erdeExpr,erdeParens
   \ skipwhite skipempty nextgroup=erdeBlock
 
-" Support both array access AND array destructuring
+" Support array access and table fields
 syntax region erdeBracketGroup matchgroup=erdeBrackets start='\[' end=']' transparent
   \ contains=@erdeExpr,erdeParens
-  \ skipwhite skipempty nextgroup=erdeBlock
-
-" Support both tables AND destructuring
-syntax region erdeBraceGroup matchgroup=erdeBraces start='{' end='}'
-  \ contains=@erdeExpr,erdeBracketGroup
   \ skipwhite skipempty nextgroup=erdeBlock
 
 syntax match erdeError ')'
@@ -127,11 +122,8 @@ hi def link erdeConstant Constant
 hi def link erdeBuiltIn Boolean
 
 syntax keyword erdeSelf self skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeSelf '\$' skipwhite skipempty nextgroup=erdeSelfName,erdeBlock
-syntax match erdeSelfName '\h\w*' contained skipwhite skipempty nextgroup=erdeBlock
 
-hi def link erdeSelf Special
-hi def link erdeSelfName Constant " keep this consistent w/ erdeDotIndex
+hi def link erdeName Identifier
 
 " Numbers
 
@@ -195,12 +187,12 @@ hi def link erdeArrowFunctionOperator Operator
 
 " Declarations
 
-call s:ErdeKeywords('erdeScope', '', ['local', 'global', 'module', 'main'])
+call s:ErdeKeywords('erdeScope', '', ['local', 'global', 'module'])
 
 hi def link erdeScope Type
 
-syntax region erdeDeclaration start='\%(local\|global\|module\|main\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
-  \ transparent contains=erdeParens,erdeName,erdeBracketGroup,erdeBraceGroup
+syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
+  \ transparent contains=erdeParens,erdeName,erdeMapDestructure,erdeArrayDestructure
 
 " Stdlib
 
@@ -257,10 +249,36 @@ call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['else', 'repeat', 'try'])
 
 hi def link erdeKeyword Keyword
 
+" Tables / Destructure
+"
+" Need to define this after erdeStdFunction / erdeStdModule so we don't
+" highlight table properties that match keywords!
+
+syntax match erdeField '\h\w*\s*=\@=' contained
+  \ skipwhite skipempty nextgroup=@erdeExpr
+
+syntax match erdeAliasedField '\h\w*\s*:\@=' contained
+  \ skipwhite skipempty nextgroup=@erdeExpr
+
+syntax region erdeTable matchgroup=erdeBraces start='{' end='}'
+  \ contains=erdeField,@erdeExpr,erdeBracketGroup
+  \ skipwhite skipempty nextgroup=erdeBlock
+
+syntax region erdeMapDestructure matchgroup=erdeBraces start='{' end='}'
+  \ contained contains=erdeAliasedField,erdeField,erdeName
+  \ skipwhite skipempty nextgroup=@erdeExpr
+
+syntax region erdeArrayDestructure matchgroup=erdeBrackets start='\[' end=']'
+  \ contained contains=erdeField,erdeName
+  \ skipwhite skipempty nextgroup=@erdeExpr
+
+hi def link erdeField Identifier
+hi def link erdeAliasedField Identifier
+
 " Block
 "
-" Need to define this after erdeBraceGroup to give it precedence in the case that
-" both are matched! (for example in erdeArrowFunction's nextgroup)
+" Need to define this after erdeMapDestructure to give it precedence in the case 
+" that both are matched! (for example in erdeArrowFunction's nextgroup)
 
 " keep this consistent w/ erdeDoBlock (except nextgroup=erdeBlock)
 syntax region erdeBlock matchgroup=erdeBlockBraces start='{' end='}'
