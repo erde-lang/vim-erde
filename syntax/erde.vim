@@ -132,7 +132,7 @@ hi def link erdeBuiltIn Boolean
 
 syntax keyword erdeSelf self skipwhite skipempty nextgroup=erdeBlock
 
-hi def link erdeName Identifier
+hi def link erdeSelf Constant
 
 " Numbers
 
