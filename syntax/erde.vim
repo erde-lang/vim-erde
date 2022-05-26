@@ -157,7 +157,10 @@ syntax match erdeEscapeChar contained
   \ /\\[\\abfnrtvz'"{}]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}/
 syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}'
   \ contained contains=@erdeExpr
-syntax region erdeShortString start=/\z(["']\)/ end='\z1\|$' skip='\\\\\|\\\z1'
+syntax region erdeSingleQuoteString start="'" end="'\|$" skip="\\\\\|\\'"
+  \ contains=erdeEscapeChar
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax region erdeDoubleQuoteString start='"' end='"\|$' skip='\\\\\|\\"'
   \ contains=erdeEscapeChar,erdeInterpolation
   \ skipwhite skipempty nextgroup=erdeBlock
 syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
@@ -165,7 +168,8 @@ syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
   \ skipwhite skipempty nextgroup=erdeBlock
 
 hi def link erdeEscapeChar SpecialChar
-hi def link erdeShortString String
+hi def link erdeSingleQuoteString String
+hi def link erdeDoubleQuoteString String
 hi def link erdeLongString String
 hi def link erdeInterpolationBraces Special
 
