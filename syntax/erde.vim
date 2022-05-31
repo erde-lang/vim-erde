@@ -65,7 +65,7 @@ syntax cluster erdeExpr contains=
   \ erdeStdModule,erdeStdFunction,erdeStdProperty,
   \ erdeConstant,erdeSelf,erdeBuiltIn,
   \ erdeInt,erdeHex,erdeFloat,
-  \ erdeShortString,erdeLongString,
+  \ erdeSingleQuoteString, erdeDoubleQuoteString, erdeLongString,
   \ erdeFunctionCall,erdeArrowFunction,erdeArrowFunctionOperator,
   \ erdeTable
 
