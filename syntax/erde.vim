@@ -61,7 +61,7 @@ endfunction
 " ------------------------------------------------------------------------------
 
 syntax cluster erdeExpr contains=
-  \ erdeComment,erdeName,erdeDotIndex,erdeOperator,
+  \ erdeKeyword,erdeComment,erdeName,erdeDotIndex,erdeOperator,
   \ erdeStdModule,erdeStdFunction,erdeStdProperty,
   \ erdeConstant,erdeSelf,erdeBuiltIn,
   \ erdeInt,erdeHex,erdeFloat,

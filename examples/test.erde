@@ -223,6 +223,8 @@ test?:test(1, 2, 3, a, b, c)
 test:test?(1, 2, 3, a, b, c)
 test.test?(1, 2, 3, a, b, c)
 
+print(do { return 1 })
+
 return {}
 
 return (
