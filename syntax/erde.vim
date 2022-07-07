@@ -103,13 +103,8 @@ syntax region erdeBracketGroup matchgroup=erdeBrackets start='\[' end=']' transp
   \ contains=@erdeExpr,erdeParens
   \ skipwhite skipempty nextgroup=erdeBlock
 
-syntax match erdeError ')'
-syntax match erdeError '}'
-syntax match erdeError '\]'
-
 hi def link erdeBrackets Structure
 hi def link erdeBraces Structure
-hi def link erdeError Error
 
 " Comments
 
