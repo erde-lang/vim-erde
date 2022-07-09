@@ -77,7 +77,6 @@ syntax cluster erdeExpr contains=
 syntax match erdeName '\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
-hi def link erdeName Identifier
 hi def link erdeDotIndex Constant
 
 " Keywords
