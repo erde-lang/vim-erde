@@ -243,26 +243,17 @@ endif
 " Need to define this after erdeStdFunction / erdeStdModule so we don't
 " highlight table properties that match keywords!
 
-syntax match erdeField '\h\w*\s*=\@=' contained
-  \ skipwhite skipempty nextgroup=@erdeExpr
-
-syntax match erdeAliasedField '\h\w*\s*:\@=' contained
-  \ skipwhite skipempty nextgroup=@erdeExpr
-
 syntax region erdeTable matchgroup=erdeBraces start='{' end='}'
-  \ contains=erdeField,@erdeExpr,erdeBracketGroup
+  \ contains=@erdeExpr,erdeBracketGroup
   \ skipwhite skipempty nextgroup=erdeBlock
 
 syntax region erdeMapDestructure matchgroup=erdeBraces start='{' end='}'
-  \ contained contains=erdeAliasedField,erdeField,erdeName
+  \ contained contains=@erdeExpr
   \ skipwhite skipempty nextgroup=@erdeExpr
 
 syntax region erdeArrayDestructure matchgroup=erdeBrackets start='\[' end=']'
-  \ contained contains=erdeField,erdeName
+  \ contained contains=@erdeExpr
   \ skipwhite skipempty nextgroup=@erdeExpr
-
-hi def link erdeField Identifier
-hi def link erdeAliasedField Identifier
 
 " Catch
 "
