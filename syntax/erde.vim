@@ -90,7 +90,7 @@ hi def link erdeKeyword Keyword
 
 " Operators / Surrounds
 
-syntax match erdeOperator '[!#~|&<>=+*/%^:.-]'
+syntax match erdeOperator '[!#~|&<>=+*/%^-]\|\.\{2,3}'
 hi def link erdeOperator Operator
 
 syntax region erdeParens start='(' end=')' transparent
