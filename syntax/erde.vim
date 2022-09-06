@@ -116,17 +116,15 @@ hi def link erdeCommentTags Todo
 hi def link erdeComment Comment
 hi def link erdeShebang Comment
 
-" Language Constants
+" Constants
 
-syntax keyword erdeConstant _G _VERSION _ENV skipwhite skipempty nextgroup=erdeBlock
 syntax keyword erdeBuiltIn nil true false skipwhite skipempty nextgroup=erdeBlock
+syntax keyword erdeSelf self skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
+syntax match erdeConstant '[A-Z_][A-Z0-9_]*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
-hi def link erdeConstant Constant
 hi def link erdeBuiltIn Boolean
-
-syntax keyword erdeSelf self skipwhite skipempty nextgroup=erdeBlock
-
 hi def link erdeSelf Constant
+hi def link erdeConstant Constant
 
 " Numbers
 
@@ -190,7 +188,7 @@ call s:ErdeKeywords('erdeScope', '', ['local', 'global', 'module'])
 hi def link erdeScope Type
 
 syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
-  \ transparent contains=erdeParens,erdeName,erdeMapDestructure,erdeArrayDestructure
+  \ transparent contains=erdeParens,erdeName,erdeConstant,erdeMapDestructure,erdeArrayDestructure
 
 " Stdlib
 
