@@ -83,8 +83,8 @@ hi def link erdeDotIndex Constant
 "
 " Need to define this after erdeName.
 
-call s:ErdeKeywords('erdeKeyword', '', ['return', 'if', 'elseif', 'for', 'in', 'break', 'continue', 'while', 'until', 'catch', 'goto'])
-call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['else', 'repeat', 'try'])
+call s:ErdeKeywords('erdeKeyword', '', ['break', 'catch', 'continue', 'elseif', 'for', 'goto', 'if', 'in', 'return', 'until', 'while'])
+call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['do', 'else', 'repeat', 'try'])
 
 hi def link erdeKeyword Keyword
 
@@ -165,6 +165,15 @@ hi def link erdeDoubleQuoteString String
 hi def link erdeLongString String
 hi def link erdeInterpolationBraces Special
 
+" Declarations
+
+call s:ErdeKeywords('erdeScope', '', ['local', 'global', 'module'])
+
+hi def link erdeScope Type
+
+syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
+  \ transparent contains=erdeParens,erdeName,erdeConstant,erdeMapDestructure,erdeArrayDestructure
+
 " Functions
 
 syntax match erdeFunctionCall '\h\w*\(?\=(\)\@='
@@ -180,15 +189,6 @@ syntax region erdeFunctionParams start='(' end=')' contained
 hi def link erdeFunctionCall Function
 hi def link erdeFunctionKeyword Keyword
 hi def link erdeFunction Function
-
-" Declarations
-
-call s:ErdeKeywords('erdeScope', '', ['local', 'global', 'module'])
-
-hi def link erdeScope Type
-
-syntax region erdeDeclaration start='\%(local\|global\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
-  \ transparent contains=erdeParens,erdeName,erdeConstant,erdeMapDestructure,erdeArrayDestructure
 
 " Stdlib
 
@@ -287,18 +287,6 @@ syntax region erdeBlock matchgroup=erdeBlockBraces start='{' end='}'
   \ contained contains=TOP
 
 hi def link erdeBlockBraces Noise
-
-" Do Block
-"
-" Keep this separate, as do blocks in erde can also be terminals (and thus
-" require nextgroup=erdeBlock)
-
-call s:ErdeKeywords('erdeKeyword', 'erdeDoBlock', ['do'])
-
-" keep this consistent w/ erdeBlock (except nextgroup=erdeBlock)
-syntax region erdeDoBlock matchgroup=erdeBlockBraces start='{' end='}'
-  \ contained contains=TOP 
-  \ skipwhite skipempty nextgroup=erdeBlock
 
 " ------------------------------------------------------------------------------
 " Teardown
