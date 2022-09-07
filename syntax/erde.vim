@@ -19,7 +19,7 @@
 "
 "   ... skipwhite skipempty nextgroup=erdeBlock
 "
-" This is also applied to erdeParens to cover the case of wrapped expressions
+" This is also applied to erdeParenGroup to cover the case of wrapped expressions
 " and function calls.
 " ------------------------------------------------------------------------------
 
@@ -91,12 +91,12 @@ syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*'
 
 syntax match erdeOperator '[!#~|&<>=+*/%^-]\|\.\{2,3}\|->\|=>'
 
-syntax region erdeParens start='(' end=')' transparent
-  \ contains=@erdeExpr,erdeParens
+syntax region erdeParenGroup matchgroup=erdeParens start='(' end=')' transparent
+  \ contains=@erdeExpr,erdeParenGroup
   \ skipwhite skipempty nextgroup=erdeBlock
 
 syntax region erdeBracketGroup matchgroup=erdeBrackets start='\[' end=']' transparent
-  \ contains=@erdeExpr,erdeParens
+  \ contains=@erdeExpr,erdeParenGroup
   \ skipwhite skipempty nextgroup=erdeBlock
 
 " -------------------------------------
@@ -255,6 +255,7 @@ hi def link erdeDotIndex Constant
 
 " Punctuation
 hi def link erdeOperator Operator
+hi def link erdeParens Noise
 hi def link erdeBrackets Noise
 hi def link erdeBraces Noise
 
