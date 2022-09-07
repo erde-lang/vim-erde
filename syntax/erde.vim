@@ -198,15 +198,6 @@ syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
   \ contains=erdeEscapeChar,erdeInterpolation
   \ skipwhite skipempty nextgroup=erdeBlock
 
-syntax region erdeFunctionParams matchgroup=erdeParens start='(' end=')' contained
-  \ contains=@erdeExpr
-  \ skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeFunction '\h\w*\(?\=(\)\@='
-  \ skipwhite skipempty nextgroup=erdeFunctionParams
-syntax match erdeArrowFunction '\%((.*)\|{.*}\|\|\[.*\]\|\h\w*\)\s*\%(->\|=>\)'
-  \ transparent contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
-  \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
-
 " Need to define this after erdeStdFunction / erdeStdModule so we don't
 " highlight table properties that match keywords!
 syntax match erdeTableField '\h\w*\s*\%(=\|:\)\@='
@@ -215,6 +206,15 @@ syntax match erdeTableField '\h\w*\s*\%(=\|:\)\@='
 syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}'
   \ contains=erdeTableField,@erdeExpr,erdeBracketGroup
   \ skipwhite skipempty nextgroup=erdeBlock
+
+syntax region erdeFunctionParams matchgroup=erdeParens start='(' end=')' contained
+  \ contains=@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeFunction '\h\w*\(?\=(\)\@='
+  \ skipwhite skipempty nextgroup=erdeFunctionParams
+syntax match erdeArrowFunction '\%((.*)\|{.*}\|\|\[.*\]\|\h\w*\)\s*\%(->\|=>\)'
+  \ transparent contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
 
 " -------------------------------------
 " Destructuring

@@ -1,14 +1,6 @@
-#! this is a shebang
-
---[[
-this is a block comment
-]]
-
 -- -----------------------------------------------------------------------------
--- Operators
+-- Punctuation
 -- -----------------------------------------------------------------------------
-
--- Single char operators
 
 !a
 #a
@@ -27,9 +19,6 @@ a * b
 a / b
 a % b
 a ^ b
-
--- Multi char operators
-
 a .. b
 a == b
 a != b
@@ -51,12 +40,45 @@ a.b[c]()
 {}}
 
 -- -----------------------------------------------------------------------------
--- Types
+-- Comments
 -- -----------------------------------------------------------------------------
 
--- Examples
+-- this is an inline comment
+
+--[[
+this is a block comment
+]]
+
+-- NOTE
+-- TODO
+-- FIXME
+-- XXX
+-- TBD
+
+#! this is a shebang
+
+-- -----------------------------------------------------------------------------
+-- Std Library
+-- -----------------------------------------------------------------------------
+
+local x = require('test')
+_VERSION
+
+coroutine.create()
+coroutine.createee()
+
+-- Anti-Examples
+
+a.assert()
+acoroutine.create()
+a.coroutine.create()
+
+-- -----------------------------------------------------------------------------
+-- Types (Primitives)
+-- -----------------------------------------------------------------------------
 
 nil
+
 true
 false
 
@@ -83,7 +105,9 @@ false
 
 self
 
--- Anti-Examples (no escape highlighting)
+-- Anti-Examples
+
+-- (no escape highlighting)
 'single \x1 string'
 'single \{99\} string'
 'single \{99} string'
@@ -91,76 +115,7 @@ self
 "single \{99} string"
 
 -- -----------------------------------------------------------------------------
--- Scopes / Vars
--- -----------------------------------------------------------------------------
-
-local a, b
-local a = 4
-global b = 4
-module c = 4
-
-local a, { a = 2, b } = 1, 4
-
-local [ hello, world ] = myfunc()
-
-local { print } = myfunc()
-
-local { print: test = 1 } = myfunc()
-
-local {
-  a,
-  b
-}, b = 4
-
-local a, b, c = 1, 2, 3
-
-local MY_CONSTANT = 4
-
--- -----------------------------------------------------------------------------
--- Logic Flow
--- -----------------------------------------------------------------------------
-
-do { }
-
-if {} + {} {}
-if a.b[c]() {}
-if test({1, 2}) { }
-elseif 1 { }
-else { }
-
-repeat { } until 3
-while x {}
-
-for i = 1, 2 { }
-for k, v in ipairs() { }
-for { test } in myiter() { }
-for [ test ] in myiter() { }
-
-return
-
-while true {
-  break
-  continue
-}
-
-try {}
-catch {
-}
-
-try {}
-catch {} {}
-
-try {}
-catch [ print ] {}
-
-goto test
-::test::
-
-if x {
-}
-
--- -----------------------------------------------------------------------------
--- Tables
+-- Types (Table)
 -- -----------------------------------------------------------------------------
 
 local x = { z = { x } }
@@ -172,7 +127,7 @@ local x = {
   mykey = 3,
 }
 
-x.hello
+x.test
 ({ a = 2 }).a
 
 -- Anti-Examples
@@ -182,7 +137,7 @@ x.return
 x.catch()
 
 -- -----------------------------------------------------------------------------
--- Functions
+-- Types (Functions)
 -- -----------------------------------------------------------------------------
 
 local function test() {}
@@ -193,11 +148,9 @@ function test(a, b = 3, ...c) {}
 local function test.test:test() {}
 local function test.test:test({ a, [b] }) {}
 
-local x = () -> "hello"
+local x = () -> "test"
 local x = () -> { return }
 local x = (a, b) => (1, 2, "hi")
-local x = { hello } -> { return }
-local x = [ hello ] -> { return }
 myfunc(() -> print('hello world'))
 
 test.test()
@@ -217,17 +170,78 @@ return (
 )
 
 -- -----------------------------------------------------------------------------
--- Std Library
+-- Destructuring
 -- -----------------------------------------------------------------------------
 
-local x = require('hello')
-_VERSION
+local a, { a = 2, b } = 1, 4
 
-coroutine.create()
-coroutine.createee()
+local [ hello, world ] = myfunc()
 
--- Anti-Examples
+local { print } = myfunc()
 
-a.assert()
-acoroutine.create()
-a.coroutine.create()
+local { print: test = 1 } = myfunc()
+
+local {
+  a,
+  b
+}, b = 4
+
+local function test({ test }) {}
+global function test({ print }) {}
+
+local x = { test } -> { return }
+local x = { print } -> { return }
+local x = [ test ] -> { return }
+local x = [ print ] -> { return }
+
+for { test } in myiter() { }
+for { print } in myiter() { }
+for [ test ] in myiter() { }
+for [ print ] in myiter() { }
+
+try {} catch { test } {}
+try {} catch { print } {}
+try {} catch [ test ] {}
+try {} catch [ print ] {}
+
+-- -----------------------------------------------------------------------------
+-- Blocks / Statements
+-- -----------------------------------------------------------------------------
+
+local a, b
+local a = 4
+global b = 4
+module c = 4
+local a, b, c = 1, 2, 3
+local MY_CONSTANT = 4
+
+do { }
+
+if {} + {} {}
+if a.b[c]() {}
+if test({1, 2}) { }
+elseif 1 { }
+else { }
+
+repeat { } until 3
+while x {}
+
+for i = 1, 2 { }
+for k, v in ipairs() { }
+
+return
+
+while true {
+  break
+  continue
+}
+
+try {}
+catch {
+}
+
+goto test
+::test::
+
+if x {
+}
