@@ -66,28 +66,35 @@ syntax cluster erdeExpr contains=
   \ erdeConstant,erdeSelf,erdeNil,erdeBoolean,
   \ erdeInt,erdeHex,erdeFloat,
   \ erdeSingleQuoteString, erdeDoubleQuoteString, erdeLongString,
-  \ erdeArrowFunction,erdeArrowFunctionOperator,erdeFunction,
+  \ erdeArrowFunction,erdeFunction,
   \ erdeTable
 
+" -------------------------------------
 " Names
 "
 " Need to define this first, as it is often overridden (keywords, function call,
 " function definition, table keys, etc).
+" -------------------------------------
 
-syntax match erdeName '\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
-syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
+syntax match erdeName '\h\w*'
+  \ skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
+
+syntax match erdeConstant '[A-Z_][A-Z0-9_]*'
+  \ skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
+
+syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*'
+  \ skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
 " -------------------------------------
 " Punctuation
 " -------------------------------------
 
-syntax match erdeOperator '[!#~|&<>=+*/%^-]\|\.\{2,3}'
+syntax match erdeOperator '[!#~|&<>=+*/%^-]\|\.\{2,3}\|->\|=>'
 
 syntax region erdeParens start='(' end=')' transparent
   \ contains=@erdeExpr,erdeParens
   \ skipwhite skipempty nextgroup=erdeBlock
 
-" Support array access and table fields
 syntax region erdeBracketGroup matchgroup=erdeBrackets start='\[' end=']' transparent
   \ contains=@erdeExpr,erdeParens
   \ skipwhite skipempty nextgroup=erdeBlock
@@ -96,9 +103,12 @@ syntax region erdeBracketGroup matchgroup=erdeBrackets start='\[' end=']' transp
 " Comments
 " -------------------------------------
 
-syntax region erdeComment start='--' end='$' contains=erdeCommentTags
-syntax region erdeComment start='--\[\z(=*\)\['  end='\]\z1\]' contains=erdeCommentTags
-syntax keyword erdeCommentTags contained NOTE TODO FIXME XXX TBD
+syntax region erdeComment start='--' end='$'
+  \ contains=erdeCommentTags
+syntax region erdeComment start='--\[\z(=*\)\['  end='\]\z1\]'
+  \ contains=erdeCommentTags
+syntax keyword erdeCommentTags NOTE TODO FIXME XXX TBD
+  \ contained
 syntax region erdeShebang start='^#!' end='$'
 
 " -------------------------------------
@@ -108,48 +118,8 @@ syntax region erdeShebang start='^#!' end='$'
 call s:ErdeKeywords('erdeKeyword', '', ['break', 'catch', 'continue', 'elseif', 'for', 'function', 'goto', 'if', 'in', 'return', 'until', 'while'])
 call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['do', 'else', 'repeat', 'try'])
 call s:ErdeKeywords('erdeScope', '', ['local', 'global', 'module'])
-syntax match erdeConstant '[A-Z_][A-Z0-9_]*' skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
-syntax keyword erdeSelf self skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
-
-" -------------------------------------
-" Primitives
-" -------------------------------------
-
-syntax keyword erdeNil nil skipwhite skipempty nextgroup=erdeBlock
-syntax keyword erdeBoolean true false skipwhite skipempty nextgroup=erdeBlock
-
-syntax match erdeInt '\<\d\+\>'
-  \ skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeHex '\<0[xX]\%([[:xdigit:]]*\.\)\=[[:xdigit:]]\+\%([pP][-+]\=\d\+\)\=\>'
-  \ skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeFloat '\<\d*\.\=\d\+\%([eE][-+]\=\d\+\)\=\>'
-  \ skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
-  \ skipwhite skipempty nextgroup=erdeBlock
-
-syntax match erdeEscapeChar contained
-  \ /\\[\\abfnrtvz'"{}]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{,3}/
-syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}'
-  \ contained contains=@erdeExpr
-syntax region erdeSingleQuoteString start="'" end="'\|$" skip="\\\\\|\\'"
-  \ contains=erdeEscapeChar
-  \ skipwhite skipempty nextgroup=erdeBlock
-syntax region erdeDoubleQuoteString start='"' end='"\|$' skip='\\\\\|\\"'
-  \ contains=erdeEscapeChar,erdeInterpolation
-  \ skipwhite skipempty nextgroup=erdeBlock
-syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
-  \ contains=erdeEscapeChar,erdeInterpolation
-  \ skipwhite skipempty nextgroup=erdeBlock
-
-" -------------------------------------
-" Functions
-" -------------------------------------
-
-syntax region erdeFunctionParams matchgroup=erdeParens start='(' end=')' contained
-  \ contains=@erdeExpr
-  \ skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeFunction '\h\w*\(?\=(\)\@='
-  \ skipwhite skipempty nextgroup=erdeFunctionParams
+syntax keyword erdeSelf self
+  \ skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
 " -------------------------------------
 " Stdlib
@@ -195,16 +165,62 @@ if !exists('g:erde_disable_stdlib_syntax') || g:erde_disable_stdlib_syntax != 1
   call s:ErdeStdProperties('table', ['concat', 'insert', 'maxn', 'remove', 'sort'])
 endif
 
-" Tables / Destructure
-"
-" Need to define this after erdeStdFunction / erdeStdModule so we don't
-" highlight table properties that match keywords!
+" -------------------------------------
+" Types
+" -------------------------------------
 
-syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}'
-  \ contains=@erdeExpr,erdeBracketGroup
+syntax keyword erdeNil nil
   \ skipwhite skipempty nextgroup=erdeBlock
 
-syntax region erdeMapDestructure matchgroup=erdeTableBraces start='{' end='}'
+syntax keyword erdeBoolean true false
+  \ skipwhite skipempty nextgroup=erdeBlock
+
+syntax match erdeInt '\<\d\+\>'
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeHex '\<0[xX]\%([[:xdigit:]]*\.\)\=[[:xdigit:]]\+\%([pP][-+]\=\d\+\)\=\>'
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeFloat '\<\d*\.\=\d\+\%([eE][-+]\=\d\+\)\=\>'
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
+  \ skipwhite skipempty nextgroup=erdeBlock
+
+syntax match erdeEscapeChar /\\[\\abfnrtvz'"]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{1,3}/
+  \ contained
+syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}'
+  \ contained contains=@erdeExpr
+syntax region erdeSingleQuoteString start="'" end="'\|$" skip="\\\\\|\\'"
+  \ contains=erdeEscapeChar
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax region erdeDoubleQuoteString start='"' end='"\|$' skip='\\\\\|\\"'
+  \ contains=erdeEscapeChar,erdeInterpolation
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
+  \ contains=erdeEscapeChar,erdeInterpolation
+  \ skipwhite skipempty nextgroup=erdeBlock
+
+syntax region erdeFunctionParams matchgroup=erdeParens start='(' end=')' contained
+  \ contains=@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeFunction '\h\w*\(?\=(\)\@='
+  \ skipwhite skipempty nextgroup=erdeFunctionParams
+syntax match erdeArrowFunction '\%((.*)\|{.*}\|\|\[.*\]\|\h\w*\)\s*\%(->\|=>\)'
+  \ transparent contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
+
+" Need to define this after erdeStdFunction / erdeStdModule so we don't
+" highlight table properties that match keywords!
+syntax match erdeTableField '\h\w*\s*\%(=\|:\)\@='
+  \ transparent contained contains=erdeName
+  \ skipwhite skipempty nextgroup=@erdeExpr
+syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}'
+  \ contains=erdeTableField,@erdeExpr,erdeBracketGroup
+  \ skipwhite skipempty nextgroup=erdeBlock
+
+" -------------------------------------
+" Destructuring
+" -------------------------------------
+
+syntax region erdeMapDestructure matchgroup=erdeBraces start='{' end='}'
   \ contained contains=@erdeExpr
   \ skipwhite skipempty nextgroup=@erdeExpr
 
@@ -212,32 +228,16 @@ syntax region erdeArrayDestructure matchgroup=erdeBrackets start='\[' end=']'
   \ contained contains=@erdeExpr
   \ skipwhite skipempty nextgroup=@erdeExpr
 
-" Catch
-"
-" Need to define this after erdeMapDestructure and erdeArrayDestructure so
-" that our regex match for {.*} and [.*] take precedence!
-
-syntax match erdeCatch '\%(catch\)\@<=\s*{\@=' transparent 
-  \ skipwhite skipempty nextgroup=erdeBlock
-
-syntax match erdeCatchDestructure '\%(catch\)\@<=\s*\%({.*}\|\[.*\]\|\h\w*\)\s*{\@='
-  \ transparent contains=erdeMapDestructure,@erdeExpr
-  \ skipwhite skipempty nextgroup=erdeBlock
-
-" Arrow Functions
-"
-" Need to define this after erdeMapDestructure and erdeArrayDestructure so
-" that our regex for {.*} and [.*] take precedence for implicit params.
-
-syntax match erdeArrowFunctionOperator '\%(->\|=>\)'
-syntax match erdeArrowFunction '\%((.*)\|{.*}\|\|\[.*\]\|\h\w*\)\s*\%(->\|=>\)'
+syntax match erdeCatch '\%(catch\)\@<=\s*\(\%({.*}\|\[.*\]\|\h\w*\)\s*\)\?{\@='
   \ transparent contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
-  \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock
 
+" -------------------------------------
 " Block
 "
 " Need to define this after erdeMapDestructure to give it precedence in the case 
 " that both are matched (for example in erdeArrowFunction's nextgroup).
+" -------------------------------------
 
 syntax region erdeBlock matchgroup=erdeBraces start='{' end='}'
   \ contained contains=TOP
@@ -248,23 +248,32 @@ syntax region erdeBlock matchgroup=erdeBraces start='{' end='}'
 " @see :h group-name
 " ------------------------------------------------------------------------------
 
-" Comments
-hi def link erdeComment Comment
-hi def link erdeCommentTags Todo
-hi def link erdeShebang Comment
+" Names
+hi def link erdeName Noise
+hi def link erdeConstant Constant
+hi def link erdeDotIndex Constant
 
 " Punctuation
 hi def link erdeOperator Operator
 hi def link erdeBrackets Noise
 hi def link erdeBraces Noise
 
+" Comments
+hi def link erdeComment Comment
+hi def link erdeCommentTags Todo
+hi def link erdeShebang Comment
+
 " Keywords
 hi def link erdeKeyword Keyword
 hi def link erdeScope Type
-hi def link erdeConstant Constant
 hi def link erdeSelf Special
 
-" Primitives
+" Stdlib
+hi def link erdeStdFunction Constant
+hi def link erdeStdModule Type
+hi def link erdeStdProperty Constant 
+
+" Types
 hi def link erdeNil Boolean
 hi def link erdeBoolean Boolean
 hi def link erdeInt Number
@@ -275,19 +284,8 @@ hi def link erdeSingleQuoteString String
 hi def link erdeDoubleQuoteString String
 hi def link erdeLongString String
 hi def link erdeInterpolationBraces Special
-
-" Functions
 hi def link erdeFunction Function
-hi def link erdeArrowFunctionOperator Operator
-
-" Tables
 hi def link erdeTableBraces Structure
-hi def link erdeDotIndex Constant
-
-" Stdlib
-hi def link erdeStdFunction Constant
-hi def link erdeStdModule Type
-hi def link erdeStdProperty Constant 
 
 " ------------------------------------------------------------------------------
 " Teardown

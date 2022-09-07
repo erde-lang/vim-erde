@@ -76,10 +76,19 @@ false
 [[ long {99} ]]
 [=[ long {0x43} ]=]
 
-'single \{99\} string'
 'single \n string'
+'single \x12 string'
+'single \x12 string'
+'single \1 string'
 
 self
+
+-- Anti-Examples (no escape highlighting)
+'single \x1 string'
+'single \{99\} string'
+'single \{99} string'
+"single \{99\} string"
+"single \{99} string"
 
 -- -----------------------------------------------------------------------------
 -- Scopes / Vars
