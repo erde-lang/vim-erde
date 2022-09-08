@@ -66,7 +66,7 @@ syntax cluster erdeExpr contains=
   \ erdeConstant,erdeSelf,erdeNil,erdeBoolean,
   \ erdeInt,erdeHex,erdeFloat,
   \ erdeSingleQuoteString, erdeDoubleQuoteString, erdeLongString,
-  \ erdeArrowFunction,erdeFunction,
+  \ erdeArrowFunction,erdeFunctionCall,
   \ erdeTable
 
 " -------------------------------------
@@ -117,7 +117,7 @@ syntax region erdeShebang start='^#!' end='$'
 
 call s:ErdeKeywords('erdeKeyword', '', ['break', 'catch', 'continue', 'elseif', 'for', 'function', 'goto', 'if', 'in', 'return', 'until', 'while'])
 call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['do', 'else', 'repeat', 'try'])
-call s:ErdeKeywords('erdeScope', '', ['local', 'global', 'module'])
+call s:ErdeKeywords('erdeScope', '', ['global', 'local', 'module'])
 syntax keyword erdeSelf self
   \ skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
@@ -207,17 +207,26 @@ syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}'
   \ contains=erdeTableField,@erdeExpr,erdeBracketGroup
   \ skipwhite skipempty nextgroup=erdeBlock
 
-syntax region erdeFunctionParams matchgroup=erdeParens start='(' end=')' contained
-  \ contains=@erdeExpr
+syntax region erdeFunctionArgs matchgroup=erdeParens start='(' end=')'
+  \ contained contains=@erdeExpr
   \ skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeFunction '\h\w*\(?\=(\)\@='
+syntax match erdeFunctionCall '\h\w*(\@='
+  \ skipwhite skipempty nextgroup=erdeFunctionArgs
+
+syntax region erdeFunctionParams matchgroup=erdeParens start='(' end=')'
+  \ contained contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeFunctionDeclaration '\%(function\s\+.*\)\@<=\h\w*(\@='
   \ skipwhite skipempty nextgroup=erdeFunctionParams
 syntax match erdeArrowFunction '\%((.*)\|{.*}\|\|\[.*\]\|\h\w*\)\s*\%(->\|=>\)'
-  \ transparent contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
+  \ transparent contains=erdeFunctionParams,erdeMapDestructure,erdeArrayDestructure,@erdeExpr
   \ skipwhite skipempty nextgroup=erdeBlock,@erdeExpr
 
 " -------------------------------------
 " Destructuring
+"
+" Also see erdeFunctionParams and erdeArrowFunction (destructuring too deeply
+" integrated to separate here).
 " -------------------------------------
 
 syntax region erdeMapDestructure matchgroup=erdeBraces start='{' end='}'
@@ -228,8 +237,15 @@ syntax region erdeArrayDestructure matchgroup=erdeBrackets start='\[' end=']'
   \ contained contains=@erdeExpr
   \ skipwhite skipempty nextgroup=@erdeExpr
 
-syntax match erdeCatch '\%(catch\)\@<=\s*\(\%({.*}\|\[.*\]\|\h\w*\)\s*\)\?{\@='
-  \ transparent contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
+syntax region erdeDeclarationDestructure start='\%(global\|local\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
+  \ transparent contains=erdeName,erdeConstant,erdeMapDestructure,erdeArrayDestructure
+
+syntax match erdeForDestructure '\%(for\)\@<=\s*\(\%({.*}\|\[.*\]\|\h\w*\)\s*\)\%(in\)\@='
+  \ transparent contains=erdeMapDestructure,erdeArrayDestructure
+  \ skipwhite skipempty nextgroup=erdeBlock
+
+syntax match erdeCatchDestructure '\%(catch\)\@<=\s*\(\%({.*}\|\[.*\]\|\h\w*\)\s*\)\?{\@='
+  \ transparent contains=erdeMapDestructure,erdeArrayDestructure
   \ skipwhite skipempty nextgroup=erdeBlock
 
 " -------------------------------------
@@ -272,7 +288,7 @@ hi def link erdeSelf Special
 " Stdlib
 hi def link erdeStdFunction Constant
 hi def link erdeStdModule Type
-hi def link erdeStdProperty Constant 
+hi def link erdeStdProperty Constant
 
 " Types
 hi def link erdeNil Boolean
@@ -285,7 +301,8 @@ hi def link erdeSingleQuoteString String
 hi def link erdeDoubleQuoteString String
 hi def link erdeLongString String
 hi def link erdeInterpolationBraces Special
-hi def link erdeFunction Function
+hi def link erdeFunctionDeclaration Function
+hi def link erdeFunctionCall Function
 hi def link erdeTableBraces Structure
 
 " ------------------------------------------------------------------------------

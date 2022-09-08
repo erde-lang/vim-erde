@@ -146,7 +146,6 @@ module function test() {}
 
 function test(a, b = 3, ...c) {}
 local function test.test:test() {}
-local function test.test:test({ a, [b] }) {}
 
 local x = () -> "test"
 local x = () -> { return }
@@ -188,6 +187,8 @@ local {
 
 local function test({ test }) {}
 global function test({ print }) {}
+local function test([ test ]) {}
+global function test([ print ]) {}
 
 local x = { test } -> { return }
 local x = { print } -> { return }
