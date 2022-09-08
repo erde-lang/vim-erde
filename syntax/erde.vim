@@ -229,22 +229,22 @@ syntax match erdeArrowFunction '\%((.*)\|{.*}\|\|\[.*\]\|\h\w*\)\s*\%(->\|=>\)'
 " integrated to separate here).
 " -------------------------------------
 
+syntax region erdeDestructureDefault start='=' end='\%(,\|}\|]\)\@='
+  \ transparent contained contains=@erdeExpr
+
 syntax region erdeMapDestructure matchgroup=erdeBraces start='{' end='}'
-  \ contained contains=@erdeExpr
-  \ skipwhite skipempty nextgroup=@erdeExpr
+  \ contained contains=erdeName,erdeDestructureDefault
 
 syntax region erdeArrayDestructure matchgroup=erdeBrackets start='\[' end=']'
-  \ contained contains=@erdeExpr
-  \ skipwhite skipempty nextgroup=@erdeExpr
+  \ contained contains=erdeName,erdeDestructureDefault
 
-syntax region erdeDeclarationDestructure start='\%(global\|local\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
+syntax region erdeDeclaration start='\%(global\|local\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
   \ transparent contains=erdeName,erdeConstant,erdeMapDestructure,erdeArrayDestructure
 
-syntax match erdeForDestructure '\%(for\)\@<=\s*\(\%({.*}\|\[.*\]\|\h\w*\)\s*\)\%(in\)\@='
-  \ transparent contains=erdeMapDestructure,erdeArrayDestructure
-  \ skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeGenericFor '\%(for\)\@<=\s\+.*\s\+\%(in\)\@='
+  \ transparent contains=erdeName,erdeMapDestructure,erdeArrayDestructure
 
-syntax match erdeCatchDestructure '\%(catch\)\@<=\s*\(\%({.*}\|\[.*\]\|\h\w*\)\s*\)\?{\@='
+syntax match erdeCatch '\%(catch\)\@<=\s*\(\%({.*}\|\[.*\]\|\h\w*\)\s*\)\?{\@='
   \ transparent contains=erdeMapDestructure,erdeArrayDestructure
   \ skipwhite skipempty nextgroup=erdeBlock
 

@@ -120,11 +120,12 @@ self
 
 local x = { z = { x } }
 local x = {
-  print = '',
   mykey = { x = 2 },
   ['mykey'] = (a, b) => { return a + b },
   mykey = a -> ({ 1, 2 }),
   mykey = 3,
+  print = '',
+  mykey = print,
 }
 
 x.test
@@ -199,6 +200,8 @@ for { test } in myiter() { }
 for { print } in myiter() { }
 for [ test ] in myiter() { }
 for [ print ] in myiter() { }
+for i, { test } in myiter() { }
+for { test }, i in myiter() { }
 
 try {} catch { test } {}
 try {} catch { print } {}
