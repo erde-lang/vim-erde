@@ -186,7 +186,7 @@ syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
 
 syntax match erdeEscapeChar /\\[\\abfnrtvz'"]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{1,3}/
   \ contained
-syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%([^\\]\)\@<={' end='}'
+syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%(^\|[^\\]\)\@<={' end='}'
   \ contained contains=@erdeExpr
 syntax region erdeSingleQuoteString start="'" end="'\|$" skip="\\\\\|\\'"
   \ contains=erdeEscapeChar
