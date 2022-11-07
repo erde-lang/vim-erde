@@ -184,8 +184,8 @@ syntax match erdeFloat '\<\d*\.\=\d\+\%([eE][-+]\=\d\+\)\=\>'
 syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
   \ skipwhite skipempty nextgroup=erdeBlock
 
-syntax match erdeEscapeChar /\\[\\abfnrtvz'"]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{1,3}/
-  \ contained
+syntax match erdeEscapeChar /\\[\\abfnrtvz'"\n]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{1,3}\|\\u{[[:xdigit:]]\+}/
+ \ contained
 syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%(^\|[^\\]\)\@<={' end='}'
   \ contained contains=@erdeExpr
 syntax region erdeSingleQuoteString start="'" end="'\|$" skip="\\\\\|\\'"
