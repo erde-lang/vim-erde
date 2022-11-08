@@ -49,8 +49,8 @@ function s:ErdeKeywords(groupName, nextGroup, keywords)
   exec cmd
 endfunction
 
-function s:ErdeStdProperties(name, properties)
-  exec 'syntax match erdeStdProperty "\(\([.:]\)\@<!\<' . a:name . '\.\)\@<=\(' . join(a:properties, '\|') . '\)\>"'
+function s:ErdeStdMethods(name, methods)
+  exec 'syntax match erdeStdMethod "\(\([.:]\)\@<!\<' . a:name . '\.\)\@<=\(' . join(a:methods, '\|') . '\)\>"'
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ endfunction
 
 syntax cluster erdeExpr contains=
   \ erdeKeyword,erdeComment,erdeName,erdeDotIndex,erdeOperator,
-  \ erdeStdModule,erdeStdFunction,erdeStdProperty,
+  \ erdeStdModule,erdeStdFunction,erdeStdMethod,
   \ erdeConstant,erdeSelf,erdeNil,erdeBoolean,
   \ erdeInt,erdeHex,erdeFloat,
   \ erdeSingleQuoteString, erdeDoubleQuoteString, erdeLongString,
@@ -89,7 +89,7 @@ syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*'
 " Punctuation
 " -------------------------------------
 
-syntax match erdeOperator '[!#~|&<>=+*/%^-]\|\.\{2,3}\|->\|=>'
+syntax match erdeOperator '[!#~|&<>=+*/%^-]\|\.\{2,3}'
 
 syntax region erdeParenGroup matchgroup=erdeParens start='(' end=')' transparent
   \ contains=@erdeExpr,erdeParenGroup
@@ -155,14 +155,14 @@ if !exists('g:erde_disable_stdlib_syntax') || g:erde_disable_stdlib_syntax != 1
   \])
 
   syntax match erdeStdModule '\([.:]\)\@<!\(coroutine\|debug\|io\|math\|os\|package\|string\|table\)'
-  call s:ErdeStdProperties('coroutine', ['create', 'resume', 'running', 'status', 'wrap', 'yield' ])
-  call s:ErdeStdProperties('debug', ['debug', '[gs]etfenv', '[gs]ethook', 'getinfo', '[gs]etlocal', '[gs]etmetatable', 'getregistry', '[gs]etupvalue', 'traceback'])
-  call s:ErdeStdProperties('io', ['close', 'flush', 'input', 'lines', 'open', 'output', 'popen', 'read', 'tmpfile', 'type', 'write'])
-  call s:ErdeStdProperties('math', ['abs', 'acos', 'asin', 'atan2?', 'ceil', 'cosh?', 'deg', 'exp', 'floor', 'fmod', 'frexp', 'ldexp', 'log', 'log10', 'max', 'min', 'modf', 'pow', 'rad', 'random', 'randomseed', 'sinh?', 'sqrt', 'tanh'])
-  call s:ErdeStdProperties('os', ['clock', 'date', 'difftime', 'execute', 'exit', 'getenv', 'remove', 'rename', 'setlocale', 'time', 'tmpname'])
-  call s:ErdeStdProperties('package', ['cpath', 'loaded', 'loadlib', 'path', 'preload', 'seeall'])
-  call s:ErdeStdProperties('string', ['byte', 'char', 'dump', 'find', 'format', 'gmatch', 'gsub', 'len', 'lower', 'match', 'rep', 'reverse', 'sub', 'upper'])
-  call s:ErdeStdProperties('table', ['concat', 'insert', 'maxn', 'remove', 'sort'])
+  call s:ErdeStdMethods('coroutine', ['create', 'resume', 'running', 'status', 'wrap', 'yield' ])
+  call s:ErdeStdMethods('debug', ['debug', '[gs]etfenv', '[gs]ethook', 'getinfo', '[gs]etlocal', '[gs]etmetatable', 'getregistry', '[gs]etupvalue', 'traceback'])
+  call s:ErdeStdMethods('io', ['close', 'flush', 'input', 'lines', 'open', 'output', 'popen', 'read', 'tmpfile', 'type', 'write'])
+  call s:ErdeStdMethods('math', ['abs', 'acos', 'asin', 'atan2?', 'ceil', 'cosh?', 'deg', 'exp', 'floor', 'fmod', 'frexp', 'ldexp', 'log', 'log10', 'max', 'min', 'modf', 'pow', 'rad', 'random', 'randomseed', 'sinh?', 'sqrt', 'tanh'])
+  call s:ErdeStdMethods('os', ['clock', 'date', 'difftime', 'execute', 'exit', 'getenv', 'remove', 'rename', 'setlocale', 'time', 'tmpname'])
+  call s:ErdeStdMethods('package', ['cpath', 'loaded', 'loadlib', 'path', 'preload', 'seeall'])
+  call s:ErdeStdMethods('string', ['byte', 'char', 'dump', 'find', 'format', 'gmatch', 'gsub', 'len', 'lower', 'match', 'rep', 'reverse', 'sub', 'upper'])
+  call s:ErdeStdMethods('table', ['concat', 'insert', 'maxn', 'remove', 'sort'])
 endif
 
 " -------------------------------------
@@ -286,9 +286,9 @@ hi def link erdeScope Type
 hi def link erdeSelf Special
 
 " Stdlib
-hi def link erdeStdFunction Constant
+hi def link erdeStdFunction Function
+hi def link erdeStdMethod Function
 hi def link erdeStdModule Type
-hi def link erdeStdProperty Constant
 
 " Types
 hi def link erdeNil Boolean
