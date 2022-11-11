@@ -266,8 +266,10 @@ syntax region erdeBlock matchgroup=erdeBraces start='{' end='}'
 
 " Names
 hi def link erdeName Noise
-hi def link erdeConstant Constant
 hi def link erdeDotIndex Constant
+" Color 'erdeConstant' as 'Boolean', since using 'Constant' for both this and
+" erdeDotIndex is very noisy
+hi def link erdeConstant Boolean
 
 " Punctuation
 hi def link erdeOperator Operator
