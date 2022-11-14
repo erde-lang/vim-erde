@@ -76,10 +76,10 @@ syntax cluster erdeExpr contains=
 " function definition, table keys, etc).
 " -------------------------------------
 
-syntax match erdeName '\h\w*'
+syntax match erdeName '\<\h\w*\>'
   \ skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
-syntax match erdeConstant '[A-Z_][A-Z0-9_]*'
+syntax match erdeConstant '\<[A-Z_][A-Z0-9_]*\>'
   \ skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
 
 syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*'
