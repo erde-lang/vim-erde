@@ -97,11 +97,16 @@ false
 
 [[ long {99} ]]
 [=[ long {0x43} ]=]
+[[
+{99}a]]
 
 'single \n string'
 'single \x12 string'
 'single \x12 string'
 'single \1 string'
+'single \u{12d1} string'
+'single \
+string'
 
 self
 
@@ -113,6 +118,8 @@ self
 'single \{99} string'
 "single \{99\} string"
 "single \{99} string"
+"single \ 
+string"
 
 -- -----------------------------------------------------------------------------
 -- Types (Table)
