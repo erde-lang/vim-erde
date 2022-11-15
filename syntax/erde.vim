@@ -64,7 +64,7 @@ syntax cluster erdeExpr contains=
   \ erdeKeyword,erdeComment,erdeName,erdeDotIndex,erdeOperator,
   \ erdeStdModule,erdeStdFunction,erdeStdMethod,
   \ erdeConstant,erdeSelf,erdeNil,erdeBoolean,
-  \ erdeInt,erdeHex,erdeFloat,
+  \ erdeHex,erdeDecimal,
   \ erdeSingleQuoteString, erdeDoubleQuoteString, erdeLongString,
   \ erdeArrowFunction,erdeFunctionCall,
   \ erdeTable
@@ -175,13 +175,9 @@ syntax keyword erdeNil nil
 syntax keyword erdeBoolean true false
   \ skipwhite skipempty nextgroup=erdeBlock
 
-syntax match erdeInt '\<\d\+\>'
+syntax match erdeDecimal '\d*\.\=\d\+\%([eE][-+]\=\d\+\)\='
   \ skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeHex '\<0[xX]\%([[:xdigit:]]*\.\)\=[[:xdigit:]]\+\%([pP][-+]\=\d\+\)\=\>'
-  \ skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeFloat '\<\d*\.\=\d\+\%([eE][-+]\=\d\+\)\=\>'
-  \ skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeFloat '\.\d\+\%([eE][-+]\=\d\+\)\=\>'
+syntax match erdeHex '0[xX]\%([[:xdigit:]]*\.\)\=[[:xdigit:]]\+\%([pP][-+]\=\d\+\)\='
   \ skipwhite skipempty nextgroup=erdeBlock
 
 syntax match erdeEscapeChar /\\[\\abfnrtvz'"\n]\|\\x[[:xdigit:]]\{2}\|\\[[:digit:]]\{1,3}\|\\u{[[:xdigit:]]\+}/
@@ -295,9 +291,8 @@ hi def link erdeStdModule Type
 " Types
 hi def link erdeNil Boolean
 hi def link erdeBoolean Boolean
-hi def link erdeInt Number
 hi def link erdeHex Number
-hi def link erdeFloat Float
+hi def link erdeDecimal Float
 hi def link erdeEscapeChar SpecialChar
 hi def link erdeSingleQuoteString String
 hi def link erdeDoubleQuoteString String
