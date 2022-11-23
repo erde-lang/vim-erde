@@ -154,7 +154,7 @@ if !exists('g:erde_disable_stdlib_syntax') || g:erde_disable_stdlib_syntax != 1
     \ 'xpcall',
   \])
 
-  syntax match erdeStdModule '\([.:]\)\@<!\(coroutine\|debug\|io\|math\|os\|package\|string\|table\)'
+  syntax match erdeStdModule '\([.:]\)\@<!\<\(coroutine\|debug\|io\|math\|os\|package\|string\|table\)\>'
   call s:ErdeStdMethods('coroutine', ['create', 'resume', 'running', 'status', 'wrap', 'yield' ])
   call s:ErdeStdMethods('debug', ['debug', '[gs]etfenv', '[gs]ethook', 'getinfo', '[gs]etlocal', '[gs]etmetatable', 'getregistry', '[gs]etupvalue', 'traceback'])
   call s:ErdeStdMethods('io', ['close', 'flush', 'input', 'lines', 'open', 'output', 'popen', 'read', 'tmpfile', 'type', 'write'])

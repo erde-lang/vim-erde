@@ -69,6 +69,7 @@ coroutine.createee()
 
 -- Anti-Examples
 
+x = tables
 a.assert()
 acoroutine.create()
 a.coroutine.create()
