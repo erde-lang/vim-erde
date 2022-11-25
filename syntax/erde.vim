@@ -89,7 +89,7 @@ syntax match erdeDotIndex '\%(\.\.\)\@<!\.\@<=\h\w*'
 " Punctuation
 " -------------------------------------
 
-syntax match erdeOperator '[!#~|&<>=+*/%^-]\|\.\{2,3}'
+syntax match erdeOperator '[!#~|&<>=+*/%^-]\|\%(\.\@<!\.\{2}\.\@!\)'
 
 syntax region erdeParenGroup matchgroup=erdeParens start='(' end=')' transparent
   \ contains=@erdeExpr,erdeParenGroup
@@ -171,8 +171,9 @@ endif
 
 syntax keyword erdeNil nil
   \ skipwhite skipempty nextgroup=erdeBlock
-
 syntax keyword erdeBoolean true false
+  \ skipwhite skipempty nextgroup=erdeBlock
+syntax match erdeVarArgs '\.\@<!\.\{3}\.\@!'
   \ skipwhite skipempty nextgroup=erdeBlock
 
 syntax match erdeDecimal '\d*\.\=\d\+\%([eE][-+]\=\d\+\)\='
@@ -209,8 +210,12 @@ syntax region erdeFunctionArgs matchgroup=erdeParens start='(' end=')'
 syntax match erdeFunctionCall '\h\w*(\@='
   \ skipwhite skipempty nextgroup=erdeFunctionArgs
 
+" Param defaults needs special highlighting, since for example table braces will fight
+" destructuring braces for priority
+syntax region erdeFunctionParamsDefault start='=' end='[,)]\@='
+  \ contained contains=@erdeExpr
 syntax region erdeFunctionParams matchgroup=erdeParens start='(' end=')'
-  \ contained contains=erdeMapDestructure,erdeArrayDestructure,@erdeExpr
+  \ contained contains=erdeName,erdeMapDestructure,erdeArrayDestructure,erdeVarArgs,erdeFunctionParamsDefault
   \ skipwhite skipempty nextgroup=erdeBlock
 syntax match erdeFunctionDeclaration '\%(function\s\+.*\)\@<=\h\w*(\@='
   \ skipwhite skipempty nextgroup=erdeFunctionParams
@@ -291,6 +296,7 @@ hi def link erdeStdModule Type
 " Types
 hi def link erdeNil Boolean
 hi def link erdeBoolean Boolean
+hi def link erdeVarArgs Boolean
 hi def link erdeHex Number
 hi def link erdeDecimal Float
 hi def link erdeEscapeChar SpecialChar

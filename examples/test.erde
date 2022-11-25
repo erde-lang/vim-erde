@@ -188,6 +188,8 @@ local [ hello, world ] = myfunc()
 
 local { print } = myfunc()
 
+local { print = {} } = myfunc()
+
 local { print: test = 1 } = myfunc()
 
 local {
