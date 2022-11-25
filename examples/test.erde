@@ -154,6 +154,7 @@ global function test() {}
 module function test() {}
 
 function test(a, b = 3, ...c) {}
+function test(a = {}) {}
 local function test.test:test() {}
 
 local x = () -> "test"
@@ -239,7 +240,8 @@ repeat { } until 3
 while x {}
 
 for i = 1, 2 { }
-for k, v in ipairs() { }
+for k, v in ipairs() { hello }
+for k, v in ipairs() { a.b = instance }
 
 return
 
