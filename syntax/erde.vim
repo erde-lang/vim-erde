@@ -197,8 +197,8 @@ syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
 
 " Need to define this after erdeStdFunction / erdeStdModule so we don't
 " highlight table properties that match keywords!
-syntax match erdeTableField '\h\w*\s*\%(=\|:\)\@='
-  \ transparent contained contains=erdeName
+syntax match erdeTableField '\h\w*\s*=\@='
+  \ contained
   \ skipwhite skipempty nextgroup=@erdeExpr
 syntax region erdeTable matchgroup=erdeTableBraces start='{' end='}'
   \ contains=erdeTableField,@erdeExpr,erdeBracketGroup
@@ -265,47 +265,45 @@ syntax region erdeBlock matchgroup=erdeBraces start='{' end='}'
 " @see :h group-name
 " ------------------------------------------------------------------------------
 
-" Names
-hi def link erdeName Noise
-hi def link erdeDotIndex Constant
-" Color 'erdeConstant' as 'Boolean', since using 'Constant' for both this and
-" erdeDotIndex is very noisy
-hi def link erdeConstant Boolean
+hi def link erdeComment Comment
+hi def link erdeShebang Comment
+hi def link erdeCommentTags Todo
 
-" Punctuation
-hi def link erdeOperator Operator
+hi def link erdeName Noise
 hi def link erdeParens Noise
 hi def link erdeBrackets Noise
 hi def link erdeBraces Noise
 
-" Comments
-hi def link erdeComment Comment
-hi def link erdeCommentTags Todo
-hi def link erdeShebang Comment
-
-" Keywords
 hi def link erdeKeyword Keyword
-hi def link erdeScope Type
-hi def link erdeSelf Special
+hi def link erdeOperator Operator
 
-" Stdlib
-hi def link erdeStdFunction Function
-hi def link erdeStdMethod Function
-hi def link erdeStdModule Type
-
-" Types
 hi def link erdeNil Boolean
 hi def link erdeBoolean Boolean
 hi def link erdeVarArgs Boolean
+hi def link erdeConstant Boolean
+
 hi def link erdeHex Number
 hi def link erdeDecimal Float
+
 hi def link erdeEscapeChar SpecialChar
 hi def link erdeSingleQuoteString String
 hi def link erdeDoubleQuoteString String
 hi def link erdeLongString String
-hi def link erdeInterpolationBraces Special
+
 hi def link erdeFunctionDeclaration Function
 hi def link erdeFunctionCall Function
+hi def link erdeStdFunction Function
+hi def link erdeStdMethod Function
+
+hi def link erdeScope Type
+hi def link erdeStdModule Type
+
+hi def link erdeDotIndex Constant
+hi def link erdeTableField Constant
+
+hi def link erdeSelf Special
+hi def link erdeInterpolationBraces Special
+
 hi def link erdeTableBraces Structure
 
 " ------------------------------------------------------------------------------
