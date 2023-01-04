@@ -31,7 +31,7 @@ set cpo&vim
 " ------------------------------------------------------------------------------
 
 function s:ErdeSearchPair(lnum, flags)
-  let skip = "synIDattr(synID(line('.'), col('.'), 1), 'name') =~# 'erdeComment\\|erdeShortString\\|erdeLongString'"
+  let skip = "synIDattr(synID(line('.'), col('.'), 1), 'name') =~# 'erdeComment\\|erdeSingleQuoteString\\|erdeDoubleQuoteString\\|erdeLongString'"
   return searchpair('\%((\|{\)', '', '\%()\|}\)', a:flags, skip, a:lnum)
 endfunction
 
