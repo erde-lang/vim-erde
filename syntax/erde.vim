@@ -115,8 +115,8 @@ syntax region erdeShebang start='^#!' end='$'
 " Keywords
 " -------------------------------------
 
-call s:ErdeKeywords('erdeKeyword', '', ['break', 'catch', 'continue', 'elseif', 'for', 'function', 'goto', 'if', 'in', 'return', 'until', 'while'])
-call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['do', 'else', 'repeat', 'try'])
+call s:ErdeKeywords('erdeKeyword', '', ['break', 'continue', 'elseif', 'for', 'function', 'goto', 'if', 'in', 'return', 'until', 'while'])
+call s:ErdeKeywords('erdeKeyword', 'erdeBlock', ['do', 'else', 'repeat'])
 call s:ErdeKeywords('erdeScope', '', ['global', 'local', 'module'])
 syntax keyword erdeSelf self
   \ skipwhite skipempty nextgroup=erdeDotIndex,erdeBlock
@@ -244,10 +244,6 @@ syntax region erdeDeclaration start='\%(global\|local\|module\)\@<=\s\+\(functio
 
 syntax match erdeGenericFor '\%(for\)\@<=\s\+.*\s\+\%(\<in\>\)\@='
   \ transparent contains=erdeName,erdeMapDestructure,erdeArrayDestructure
-
-syntax match erdeCatch '\%(catch\)\@<=\s*\(\%({.*}\|\[.*\]\|\h\w*\)\s*\)\?{\@='
-  \ transparent contains=erdeMapDestructure,erdeArrayDestructure
-  \ skipwhite skipempty nextgroup=erdeBlock
 
 " -------------------------------------
 " Block

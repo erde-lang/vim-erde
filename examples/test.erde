@@ -143,7 +143,7 @@ x.test
 
 x.local
 x.return
-x.catch()
+x.return()
 
 -- -----------------------------------------------------------------------------
 -- Types (Functions)
@@ -214,11 +214,6 @@ for [ print ] in myiter() { }
 for i, { test } in myiter() { }
 for { test }, i in myiter() { }
 
-try {} catch { test } {}
-try {} catch { print } {}
-try {} catch [ test ] {}
-try {} catch [ print ] {}
-
 -- -----------------------------------------------------------------------------
 -- Blocks / Statements
 -- -----------------------------------------------------------------------------
@@ -250,10 +245,6 @@ return
 while true {
   break
   continue
-}
-
-try {}
-catch {
 }
 
 goto test
