@@ -119,7 +119,7 @@ self
 'single \{99} string'
 "single \{99\} string"
 "single \{99} string"
-"single \ 
+"single \
 string"
 
 -- -----------------------------------------------------------------------------
@@ -156,6 +156,7 @@ module function test() {}
 function test(a, b = 3, ...c) {}
 function test(a = {}) {}
 local function test.test:test() {}
+function test() { print(1, 2, 3) }
 
 local x = () -> "test"
 local x = () -> { return }
