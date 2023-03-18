@@ -56,7 +56,7 @@ endfunction
 " ------------------------------------------------------------------------------
 " Syntax
 "
-" Order matters here! Rules defined later will take precedence other those 
+" Order matters here! Rules defined later will take precedence other those
 " before it.
 " ------------------------------------------------------------------------------
 
@@ -217,7 +217,7 @@ syntax region erdeFunctionParamsDefault start='=' end='[,)]\@='
 syntax region erdeFunctionParams matchgroup=erdeParens start='(' end=')'
   \ contained contains=erdeName,erdeMapDestructure,erdeArrayDestructure,erdeVarArgs,erdeFunctionParamsDefault
   \ skipwhite skipempty nextgroup=erdeBlock
-syntax match erdeFunctionDeclaration '\%(function\s\+.*\)\@<=\h\w*(\@='
+syntax match erdeFunctionDeclaration '\%(function\s\+\%(\h\w*[.:]\)*\)\@<=\h\w*(\@='
   \ skipwhite skipempty nextgroup=erdeFunctionParams
 syntax match erdeArrowFunction '\%((.*)\|{.*}\|\|\[.*\]\|\h\w*\)\s*\%(->\|=>\)'
   \ transparent contains=erdeFunctionParams,erdeMapDestructure,erdeArrayDestructure,@erdeExpr
@@ -248,7 +248,7 @@ syntax match erdeGenericFor '\%(for\)\@<=\s\+.*\s\+\%(\<in\>\)\@='
 " -------------------------------------
 " Block
 "
-" Need to define this after erdeMapDestructure to give it precedence in the case 
+" Need to define this after erdeMapDestructure to give it precedence in the case
 " that both are matched (for example in erdeArrowFunction's nextgroup).
 " -------------------------------------
 
