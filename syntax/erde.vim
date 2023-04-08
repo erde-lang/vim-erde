@@ -239,7 +239,7 @@ syntax region erdeMapDestructure matchgroup=erdeBraces start='{' end='}'
 syntax region erdeArrayDestructure matchgroup=erdeBrackets start='\[' end=']'
   \ contained contains=erdeName,erdeDestructureDefault
 
-syntax region erdeDeclaration start='\%(global\|local\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\)\@='
+syntax region erdeDeclaration start='\%(global\|local\|module\)\@<=\s\+\(function\)\@!' end='\(=\|\n\|--\)\@='
   \ transparent contains=erdeName,erdeConstant,erdeMapDestructure,erdeArrayDestructure
 
 syntax match erdeGenericFor '\%(for\)\@<=\s\+.*\s\+\%(\<in\>\)\@='
