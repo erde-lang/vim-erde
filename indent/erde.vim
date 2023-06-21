@@ -31,7 +31,7 @@ set cpo&vim
 " ------------------------------------------------------------------------------
 
 function s:ErdeSearchPair(lnum, flags)
-  let skip = "synIDattr(synID(line('.'), col('.'), 1), 'name') =~# 'erdeComment\\|erdeSingleQuoteString\\|erdeDoubleQuoteString\\|erdeLongString'"
+  let skip = "synIDattr(synID(line('.'), col('.'), 1), 'name') =~# 'erdeComment\\|erdeSingleQuoteString\\|erdeDoubleQuoteString\\|erdeBlockString'"
   return searchpair('\%((\|{\)', '', '\%()\|}\)', a:flags, skip, a:lnum)
 endfunction
 
@@ -46,8 +46,16 @@ function s:ErdeCurrentLineIndent(prevlnum)
   call cursor(a:prevlnum, col([a:prevlnum,'$']))
   let num_cur_closes = s:ErdeSearchPair(v:lnum, 'mr')
 
+  " only allow one indent change per line
+  let indent_diff = 0
+  if num_prev_opens > num_cur_closes
+    let indent_diff = 1
+  elseif num_prev_opens < num_cur_closes
+    let indent_diff = -1
+  endif
+
   call setpos('.', restore_cursor_pos)
-  return indent(a:prevlnum) + shiftwidth() * (num_prev_opens - num_cur_closes)
+  return indent(a:prevlnum) + shiftwidth() * indent_diff
 endfunction
 
 function! ErdeIndent()
@@ -58,7 +66,7 @@ function! ErdeIndent()
 
   " don't change indentation for long strings or long comments
   for synid in synstack(v:lnum, 1)
-    if synIDattr(synid, 'name') =~# 'erdeLongString\|erdeComment'
+    if synIDattr(synid, 'name') =~# 'erdeBlockString\|erdeComment'
       return -1
     endif
   endfor
@@ -68,8 +76,8 @@ function! ErdeIndent()
   let currentl = substitute(getline(v:lnum), '--.*$', '', '')
   let i = s:ErdeCurrentLineIndent(prevlnum)
 
-  " add indentation for index / pipe chains
-  let index_chain = '^\v\s*([:.]|\>\>\s*)\h\w*'
+  " add indentation for index
+  let index_chain = '^\v\s*[:.]\h\w*'
   if prevl !~# index_chain
     if currentl =~# index_chain " beginning of chain
       let i += shiftwidth()

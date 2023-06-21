@@ -65,7 +65,7 @@ syntax cluster erdeExpr contains=
   \ erdeStdModule,erdeStdFunction,erdeStdMethod,
   \ erdeConstant,erdeSelf,erdeNil,erdeBoolean,erdeVarArgs,
   \ erdeHex,erdeDecimal,
-  \ erdeSingleQuoteString, erdeDoubleQuoteString, erdeLongString,
+  \ erdeSingleQuoteString, erdeDoubleQuoteString, erdeBlockString,
   \ erdeArrowFunction,erdeFunctionCall,
   \ erdeTable
 
@@ -191,7 +191,7 @@ syntax region erdeSingleQuoteString start="'" end="'\|$" skip="\\\\\|\\'"
 syntax region erdeDoubleQuoteString start='"' end='"\|$' skip='\\\\\|\\"'
   \ contains=erdeEscapeChar,erdeInterpolation
   \ skipwhite skipempty nextgroup=erdeBlock
-syntax region erdeLongString start="\[\z(=*\)\[" end="\]\z1\]"
+syntax region erdeBlockString start="\[\z(=*\)\[" end="\]\z1\]"
   \ contains=erdeEscapeChar,erdeInterpolation
   \ skipwhite skipempty nextgroup=erdeBlock
 
@@ -284,7 +284,7 @@ hi def link erdeDecimal Float
 hi def link erdeEscapeChar SpecialChar
 hi def link erdeSingleQuoteString String
 hi def link erdeDoubleQuoteString String
-hi def link erdeLongString String
+hi def link erdeBlockString String
 
 hi def link erdeFunctionDeclaration Function
 hi def link erdeFunctionCall Function
