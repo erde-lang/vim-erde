@@ -1,5 +1,87 @@
 -- -----------------------------------------------------------------------------
--- Punctuation
+-- Comments
+-- -----------------------------------------------------------------------------
+
+#! this is a shebang
+
+-- this is an inline comment
+
+--[[
+this is a block comment
+]]
+
+-- NOTE
+-- TODO
+-- FIXME
+-- XXX
+-- TBD
+
+-- -----------------------------------------------------------------------------
+-- Keywords
+-- -----------------------------------------------------------------------------
+
+break
+continue
+elseif
+for
+function
+goto
+if
+in
+return
+until
+while
+
+a.break -- anti-example
+
+do { }
+else { }
+repeat {}
+
+a.do -- anti-example
+
+local
+global
+module
+
+a.local -- anti-example
+
+self
+self.hello
+
+a.self-- anti-example
+
+bit32
+coroutine
+debug
+io
+math
+os
+package
+string
+table
+utf8
+
+acoroutine -- anti-example
+a.coroutine -- anti-example
+
+-- -----------------------------------------------------------------------------
+-- Constants / Builtins
+-- -----------------------------------------------------------------------------
+
+MY_CONSTANT
+local [ MY_CONSTANT ] = MY_OTHER_CONSTANT
+local { MY_CONSTANT } = MY_OTHER_CONSTANT
+
+nil
+
+true
+false
+
+...
+
+-- -----------------------------------------------------------------------------
+-- Operators
 -- -----------------------------------------------------------------------------
 
 !a
@@ -31,155 +113,149 @@ a >> b
 a += b
 a ~= b
 
-a.b[c]()
-
--- Anti-Examples
-
-())
-[]]
-{}}
+a ... b -- anti-example
 
 -- -----------------------------------------------------------------------------
--- Comments
+-- Numbers
 -- -----------------------------------------------------------------------------
 
--- this is an inline comment
+0123456789
+.0123456789
+0123456789.0123456789
+0123456789e0123456789
+0123456789e-0123456789
+0123456789e+0123456789
+0123456789E0123456789
+0123456789E-0123456789
+0123456789E+0123456789
 
---[[
-this is a block comment
-]]
+0x0123456789abcdef
+0x.0123456789abcdef
+0x0123456789abcdef.0123456789abcdef
+0xap0123456789
+0xap-0123456789
+0xap+0123456789
+0xaP0123456789
+0xaP-0123456789
+0xaP+0123456789
 
--- NOTE
--- TODO
--- FIXME
--- XXX
--- TBD
-
-#! this is a shebang
-
-local x -- my comment
-
--- -----------------------------------------------------------------------------
--- Std Library
--- -----------------------------------------------------------------------------
-
-local x = require('test')
-_VERSION
-
-coroutine.create()
-coroutine.createee()
-
--- Anti-Examples
-
-x = tables
-a.assert()
-acoroutine.create()
-a.coroutine.create()
+0x. -- anti-example
+0xg -- anti-example
+0xap+a -- anti-example
 
 -- -----------------------------------------------------------------------------
--- Types (Primitives)
+-- Strings
 -- -----------------------------------------------------------------------------
 
-nil
+'\a' '\b' '\f' '\n' '\r' '\t' '\v' '\z' '\'' '\"' '\
+'
+'\x12' '\xaf'
+'\1' '\23' '\456' '\789' '\000'
+'\u{1}' '\u{1234567890abcdef}'
 
-true
-false
+'\c' -- anti-example
+'\x1' -- anti-example
+'\x1g' -- anti-example
+'\0000' -- anti-example
+'\u{}' -- anti-example
+'\u1234' -- anti-example
+'\u{g}' -- anti-example
 
-43
-0x3fa
-0x9.aaeep+3
-.543
-30.43
-30e3
-30e+3
-30e-3
+'\a'
+'single quote string'
+'no interpolation: { 99 }'
 
-'single {word} string'
-'single {99} string'
-"Breakdouble {99} string"
+"\a"
+"double quote string"
+"no interpolation: \{ 99 }"
+"no interpolation: \{ 99 \}"
+"interpolation: { 99 }"
 
-[[ long {99} ]]
-[=[ long {0x43} ]=]
-[[
-{99}a]]
-
-'single \n string'
-'single \x12 string'
-'single \x12 string'
-'single \1 string'
-'single \u{12d1} string'
-'single \
-string'
-
-self
-
--- Anti-Examples
-
--- (no escape highlighting)
-'single \x1 string'
-'single \{99\} string'
-'single \{99} string'
-"single \{99\} string"
-"single \{99} string"
-"single \
-string"
+[[\a]]
+[[ block quote string ]]
+[=[ block quote string 2 ]=]
+[[ no interpolation: \{ 99 } ]]
+[[ no interpolation: \{ 99 \} ]]
+[[ interpolation: { 99 } ]]
+[[ interpolation:
+{99}]]
 
 -- -----------------------------------------------------------------------------
--- Types (Table)
+-- Tables
 -- -----------------------------------------------------------------------------
-
-local x = { z = { x } }
-local x = {
-  mykey = { x = 2 },
-  ['mykey'] = (a, b) => { return a + b },
-  mykey = a -> ({ 1, 2 }),
-  mykey = 3,
-  print = '',
-  mykey = print,
-}
 
 x.test
 ({ a = 2 }).a
 
--- Anti-Examples
+a.continue -- anti-example
+a.else -- anti-example
+x.local -- anti-example
+x.return() -- anti-example
+hello..world -- anti-example
 
-x.local
-x.return
-x.return()
+local x = { a = {} }
+local x = { 34, 'hello' }
+local x = { a = 'hello', b = 'world', c = { 'bye' } }
+local x = { ['hi'] = 1 }
+local x = { (a = {}) -> { return } }
+
+local x = {
+  ['hi'] = 1,
+  a = {}
+  c = { 'bye' },
+  34,
+  'hello',
+  (a = {}) -> { return },
+}
+
+local x = {
+  if = 1,
+  else = 1,
+  local = 1,
+  coroutine = 4,
+}
+
+if {} + {} {
+}
 
 -- -----------------------------------------------------------------------------
--- Types (Functions)
+-- Functions
 -- -----------------------------------------------------------------------------
 
-local function test() {}
-global function test() {}
-module function test() {}
-
-function test(a, b = 3, ...c) {}
-function test(a = {}) {}
-local function test.test:test() {}
-function test() { print(1, 2, 3) }
-
-local x = () -> "test"
-local x = () -> { return }
-local x = (a, b) => (1, 2, "hi")
-myfunc(() -> print('hello world'))
-
+test()
 test.test()
 test(1, 2, 3, a, b, c)
 test.test(1, 2, 3, a, b, c)
 test.test:test(1, 2, 3, a, b, c)
 test.test[1]:test(1, 2, 3, a, b, c)
+print({})
 
-type(() -> {})
-
-return {}
-
-return (
+hello () -- anti-example
+return ( -- anti-example
   1,
   2,
   3,
 )
+
+() -> "test"
+() -> (1, 2, 3)
+() -> { return }
+
+() => "test"
+() => (1, 2, 3)
+() => { return }
+
+function test() { return }
+function test.test() { return }
+function test:test() { return }
+function test.test:test() { return }
+
+function test(a = 3, ...b) { return }
+
+function test() {
+  local a = 1 + 2
+  return 1, 'hello', 3, a
+}
 
 -- -----------------------------------------------------------------------------
 -- Destructuring
@@ -194,6 +270,9 @@ local { print } = myfunc()
 local { print = {} } = myfunc()
 
 local { print: test = 1 } = myfunc()
+
+local [ MY_CONSTANT ] = myfunc()
+local { MY_CONSTANT } = myfunc()
 
 local {
   a,
@@ -212,8 +291,10 @@ local x = [ print ] -> { return }
 
 for { test } in myiter() { }
 for { print } in myiter() { }
+
 for [ test ] in myiter() { }
 for [ print ] in myiter() { }
+
 for i, { test } in myiter() { }
 for { test }, i in myiter() { }
 
