@@ -23,8 +23,7 @@ setting it to `0`.
 
 ### erde_disable_stdlib_syntax
 
-Disables the syntax highlighting of Lua's stdlib such as `package.path`,
-`table.concat`, etc.
+Disables the syntax highlighting of Lua's standard libraries such as `coroutine`, `package`, etc.
 
 ```vimscript
 set g:erde_disable_stdlib_syntax = 1
