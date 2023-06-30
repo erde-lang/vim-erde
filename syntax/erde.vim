@@ -105,6 +105,13 @@ syntax region erdeBlockString start="\[\z(=*\)\[" end="\]\z1\]"
   \ contains=erdeEscapeChar,erdeInterpolation
 
 " ------------------------------------------------------------------------------
+" Goto
+" ------------------------------------------------------------------------------
+
+syntax match erdeGotoJump '\%(goto\)\@<=\s*\h\w*'
+syntax match erdeGotoLabel '::\h\w*::'
+
+" ------------------------------------------------------------------------------
 " Misc
 " ------------------------------------------------------------------------------
 
@@ -147,6 +154,9 @@ hi def link erdeInterpolationBraces Special
 hi def link erdeSingleQuoteString String
 hi def link erdeDoubleQuoteString String
 hi def link erdeBlockString String
+
+hi def link erdeGotoJump Special
+hi def link erdeGotoLabel Special
 
 hi def link erdeDotIndex Constant
 hi def link erdeFunction Function
