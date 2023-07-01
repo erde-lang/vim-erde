@@ -18,14 +18,8 @@ endif
 syntax sync fromstart ":h :syn-sync-first
 syntax case match ":h :syn-case
 
-function s:MatchWords(groupName, nextGroup, keywords)
-  let cmd = 'syntax match ' . a:groupName . ' "[.:]\@<!\<\%(' . join(a:keywords, '\|') . '\)\>"'
-
-  if strlen(a:nextGroup) > 0
-    let cmd = cmd . ' skipwhite skipempty nextgroup=' . a:nextGroup
-  endif
-
-  exec cmd
+function s:MatchWords(groupName, keywords)
+  exec 'syntax match ' . a:groupName . ' "[.:]\@<!\<\%(' . join(a:keywords, '\|') . '\)\>"'
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -49,13 +43,12 @@ syntax keyword erdeCommentTags NOTE TODO FIXME XXX TBD contained
 " Keywords
 " ------------------------------------------------------------------------------
 
-call s:MatchWords('erdeKeyword', '', [ 'break', 'continue', 'do', 'else', 'for', 'function', 'goto', 'repeat' ])
-call s:MatchWords('erdeKeyword', 'erdeTable', [ 'elseif', 'if', 'in', 'return', 'until', 'while' ])
-call s:MatchWords('erdeScope', '', [ 'global', 'local', 'module' ])
-call s:MatchWords('erdeSelf', '', [ 'self' ])
+call s:MatchWords('erdeKeyword', [ 'break', 'continue', 'do', 'else', 'elseif', 'for', 'function', 'goto', 'if', 'in', 'repeat', 'return', 'until', 'while' ])
+call s:MatchWords('erdeScope', [ 'global', 'local', 'module' ])
+call s:MatchWords('erdeSelf', [ 'self' ])
 
 if !exists('g:erde_disable_stdlib_syntax') || g:erde_disable_stdlib_syntax != 1
-  call s:MatchWords('erdeStdModule', '', ['bit32', 'coroutine', 'debug', 'io', 'math', 'os', 'package', 'string', 'table', 'utf8'])
+  call s:MatchWords('erdeStdModule', ['bit32', 'coroutine', 'debug', 'io', 'math', 'os', 'package', 'string', 'table', 'utf8'])
 endif
 
 " ------------------------------------------------------------------------------
@@ -71,10 +64,10 @@ syntax match erdeVarArgs '\.\@<!\.\{3}\.\@!'
 " Operators
 " ------------------------------------------------------------------------------
 
-syntax match erdeOperator '[!~|&<>=+*/%^]' skipwhite skipempty nextgroup=erdeTable
-syntax match erdeOperator '#!\@!' skipwhite skipempty nextgroup=erdeTable " avoid shebang
-syntax match erdeOperator '-\@<!--\@!' skipwhite skipempty nextgroup=erdeTable " avoid coments
-syntax match erdeOperator '\.\@<!\.\{2}\.\@!' skipwhite skipempty nextgroup=erdeTable " avoid varargs
+syntax match erdeOperator '[!~|&<>=+*/%^]'
+syntax match erdeOperator '#!\@!' " avoid shebang
+syntax match erdeOperator '-\@<!--\@!' " avoid coments
+syntax match erdeOperator '\.\@<!\.\{2}\.\@!' " avoid varargs
 
 " ------------------------------------------------------------------------------
 " Numbers
