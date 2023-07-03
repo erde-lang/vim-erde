@@ -73,7 +73,7 @@ syntax match erdeOperator '\.\@<!\.\{2}\.\@!' " avoid varargs
 " Numbers
 " ------------------------------------------------------------------------------
 
-syntax match erdeDecimal '\d*\.\=\d\+\%([eE][-+]\=\d\+\)\='
+syntax match erdeDecimal '\<\d*\.\=\d\+\%([eE][-+]\=\d\+\)\=\>'
 syntax match erdeHex '0[xX]\%([[:xdigit:]]*\.\)\=[[:xdigit:]]\+\%([pP][-+]\=\d\+\)\='
 
 " ------------------------------------------------------------------------------
