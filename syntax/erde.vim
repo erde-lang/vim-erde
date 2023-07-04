@@ -85,7 +85,7 @@ syntax match erdeEscapeChar /\\x[[:xdigit:]]\{2}/ contained
 syntax match erdeEscapeChar /\\[[:digit:]]\{1,3}/ contained
 syntax match erdeEscapeChar /\\u{[[:xdigit:]]\+}/ contained
 
-syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%(^\|[^\\]\)\@<={' end='}'
+syntax region erdeInterpolation matchgroup=erdeInterpolationBraces start='\%(\%(^\|[^\\]\)\%(\\\\\)*\)\@<={' end='}'
   \ contained contains=TOP
 
 syntax region erdeSingleQuoteString start="'" end="'\|$"
