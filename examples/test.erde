@@ -143,6 +143,7 @@ a ... b -- anti-example
 0xg -- anti-example
 0xap+a -- anti-example
 myvar12345 -- anti-example
+myvar0x5 -- anti-example
 
 -- -----------------------------------------------------------------------------
 -- Strings
