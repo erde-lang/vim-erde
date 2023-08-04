@@ -101,7 +101,7 @@ syntax region erdeBlockString start="\[\z(=*\)\[" end="\]\z1\]"
 " Goto
 " ------------------------------------------------------------------------------
 
-syntax match erdeGotoJump '\%(goto\)\@<=\s*\h\w*'
+syntax match erdeGotoJump '\%(\<goto\>\s*\)\@<=\h\w*'
 syntax match erdeGotoLabel '::\h\w*::'
 
 " ------------------------------------------------------------------------------

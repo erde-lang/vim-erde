@@ -343,5 +343,9 @@ while true {
 goto test
 ::test::
 
+gototest -- anti-example
+goto_test -- anti-example
+_goto test -- anti-example
+
 if x {
 }
